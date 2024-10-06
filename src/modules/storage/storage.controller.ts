@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Headers, Param } from '@nestjs/common';
 
 import { StorageService } from './storage.service';
 
@@ -6,8 +6,11 @@ import { StorageService } from './storage.service';
 export class StorageController {
   constructor(private readonly storageService: StorageService) {}
 
-  @Get()
-  getHello(): string {
-    return this.storageService.getHello();
+  @Get('/objects/:objectName')
+  getObjectPublicUrl(
+    @Headers('x-user-id') userId: string,
+    @Param('objectName') objectName: string,
+  ): string {
+    return this.storageService.getObjectPublicUrl(userId, objectName);
   }
 }
