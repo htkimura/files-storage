@@ -10,7 +10,7 @@ import { Injectable } from '@nestjs/common';
 import { createHmac } from 'crypto';
 
 @Injectable()
-export class R3Service {
+export class R2Service {
   private s3Client: S3Client;
 
   constructor() {
