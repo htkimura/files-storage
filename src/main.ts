@@ -1,5 +1,5 @@
 import { PORT } from '@common/config';
-import { type INestApplication, Logger } from '@nestjs/common';
+import { type INestApplication, Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { config } from 'dotenv';
@@ -11,6 +11,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   configSwagger(app);
+  app.useGlobalPipes(new ValidationPipe());
 
   await app.listen(PORT, () => {
     Logger.log(`Server running at http://localhost:${PORT}`);
