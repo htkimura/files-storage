@@ -1,9 +1,14 @@
+import { AuthMiddleware } from '@common/middlewares';
 import { PrismaModule } from '@modules/prisma';
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 
 import { StorageModule } from './modules/storage';
 
 @Module({
   imports: [StorageModule, PrismaModule],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AuthMiddleware).forRoutes('*');
+  }
+}
