@@ -33,6 +33,16 @@ export class UserRepository {
     return this.transformUser(user, includePassword);
   }
 
+  async getById(id: string): Promise<User | null> {
+    const user = await this.prismaService.user.findUnique({
+      where: { id },
+    });
+
+    if (!user) return null;
+
+    return this.transformUser(user);
+  }
+
   async updateById(id: string, data: Partial<User>) {
     const user = await this.prismaService.user.update({
       where: { id },
