@@ -1,4 +1,6 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { AuthUser } from '@common/decorators';
+import { AuthGuard } from '@common/guards';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 
 import { CreateUserDto, LoginDto, RefreshTokenDto } from './dto';
 import { UserService } from './user.service';
@@ -20,5 +22,11 @@ export class UserController {
   @Post('refresh-token')
   refreshToken(@Body() input: RefreshTokenDto) {
     return this.userService.refreshToken(input);
+  }
+
+  @Get('me')
+  @UseGuards(AuthGuard)
+  me(@AuthUser('_id') userId: string) {
+    return this.userService.getUserById({ userId });
   }
 }
