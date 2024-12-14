@@ -4,6 +4,10 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto';
 import { User } from './user.model';
 
+export interface UserWithPassword extends User {
+  password: string;
+}
+
 @Injectable()
 export class UserRepository {
   constructor(private readonly prismaService: PrismaService) {}
@@ -16,19 +20,26 @@ export class UserRepository {
     return this.transformUser(user);
   }
 
-  async getByEmail(email: string): Promise<User | null> {
+  async getByEmail(
+    email: string,
+    includePassword?: boolean,
+  ): Promise<User | null> {
     const user = await this.prismaService.user.findUnique({
       where: { email },
     });
 
     if (!user) return null;
 
-    return this.transformUser(user);
+    return this.transformUser(user, includePassword);
   }
 
-  private transformUser(user: PrismaUser) {
-    user.password = undefined;
+  transformUser(user: PrismaUser, includePassword?: boolean) {
+    const { password, ...userWithoutPassword } = user;
 
-    return { ...user, _id: user.id };
+    const baseUserWithoutPassword = { ...userWithoutPassword, _id: user.id };
+
+    if (!includePassword) return baseUserWithoutPassword;
+
+    return { ...baseUserWithoutPassword, password };
   }
 }
