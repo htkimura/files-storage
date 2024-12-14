@@ -33,6 +33,15 @@ export class UserRepository {
     return this.transformUser(user, includePassword);
   }
 
+  async updateById(id: string, data: Partial<User>) {
+    const user = await this.prismaService.user.update({
+      where: { id },
+      data,
+    });
+
+    return this.transformUser(user);
+  }
+
   transformUser(user: PrismaUser, includePassword?: boolean) {
     const { password, ...userWithoutPassword } = user;
 
