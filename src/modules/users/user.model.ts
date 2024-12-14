@@ -10,6 +10,9 @@ export class User {
 
   @ApiProperty()
   email: string;
+
+  @ApiProperty()
+  refreshToken: string;
 }
 
 export class UserLogin {
