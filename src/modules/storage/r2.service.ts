@@ -1,13 +1,12 @@
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import {
   R2_ACCESS_KEY_ID,
   R2_ACCOUNT_ID,
   R2_BUCKET_NAME,
   R2_SECRET_ACCESS_KEY,
-  SECRET,
 } from '@common/config';
 import { Injectable } from '@nestjs/common';
-import { createHmac } from 'crypto';
 
 @Injectable()
 export class R2Service {
@@ -26,24 +25,16 @@ export class R2Service {
     this.s3Client = s3;
   }
 
-  async getObjectPublicUrl(userId: string, objectName: string) {
-    const hashedUserId = createHmac('sha256', SECRET)
-      .update(userId)
-      .digest('hex');
-
-    const objectKey = `${hashedUserId}/${objectName}`;
-
-    const params = {
+  async generatePresignedUrl(key: string) {
+    const command = new GetObjectCommand({
       Bucket: R2_BUCKET_NAME,
-      Key: objectKey,
-    };
+      Key: key,
+    });
 
-    try {
-      await this.s3Client.send(new GetObjectCommand(params));
+    const signedUrl = await getSignedUrl(this.s3Client as any, command, {
+      expiresIn: 100,
+    });
 
-      return `https://pub-${R2_ACCOUNT_ID}.r2.dev/${objectKey}`;
-    } catch (error) {
-      return null;
-    }
+    return signedUrl;
   }
 }

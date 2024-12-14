@@ -1,4 +1,5 @@
-import { Controller, Get, Headers, Param } from '@nestjs/common';
+import { AuthUser } from '@common/decorators';
+import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 
 import { StorageService } from './storage.service';
 
@@ -7,10 +8,11 @@ export class StorageController {
   constructor(private readonly storageService: StorageService) {}
 
   @Get('/objects/:objectName')
-  getObjectPublicUrl(
-    @Headers('x-user-id') userId: string,
+  @UseGuards()
+  getObjectUrl(
+    @AuthUser('_id') userId: string,
     @Param('objectName') objectName: string,
-  ): string {
-    return this.storageService.getObjectPublicUrl(userId, objectName);
+  ): Promise<string> {
+    return this.storageService.generatePresignedUrl(`${userId}/${objectName}`);
   }
 }
