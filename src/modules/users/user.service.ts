@@ -1,13 +1,18 @@
 import { Injectable } from '@nestjs/common';
 
-import { CreateUserDto, LoginDto } from './dto';
-import { CreateUserUseCase, LoginUseCase } from './use-cases';
+import { CreateUserDto, LoginDto, RefreshTokenDto } from './dto';
+import {
+  CreateUserUseCase,
+  LoginUseCase,
+  RefreshTokenUseCase,
+} from './use-cases';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly createUserUseCase: CreateUserUseCase,
     private readonly loginUseCase: LoginUseCase,
+    private readonly refreshTokenUseCase: RefreshTokenUseCase,
   ) {}
 
   createUser(input: CreateUserDto) {
@@ -16,5 +21,9 @@ export class UserService {
 
   login(input: LoginDto) {
     return this.loginUseCase.execute(input);
+  }
+
+  refreshToken(input: RefreshTokenDto) {
+    return this.refreshTokenUseCase.execute(input);
   }
 }
