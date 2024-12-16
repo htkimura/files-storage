@@ -13,5 +13,16 @@ model User {
   password String
   refreshToken String? @map("refresh_token")
 
+  files File[]
   @@map("users")
+}
+
+model File {
+  id String @id @default(uuid()) @map("_id") 
+  name String
+  path String
+  userId String @map("user_id")
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("files")
 }
