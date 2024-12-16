@@ -29,4 +29,10 @@ export class UserController {
   me(@AuthUser('_id') userId: string) {
     return this.userService.getUserById({ userId });
   }
+
+  @Get('me/files')
+  @UseGuards(AuthGuard)
+  myFiles(@AuthUser('_id') userId: string) {
+    return this.userService.getUserFiles({ userId });
+  }
 }
