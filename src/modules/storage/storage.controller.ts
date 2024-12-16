@@ -7,7 +7,7 @@ import { StorageService } from './storage.service';
 export class StorageController {
   constructor(private readonly storageService: StorageService) {}
 
-  @Get('/objects/:objectName')
+  @Get('objects/:objectName')
   @UseGuards()
   getObjectUrl(
     @AuthUser('_id') userId: string,

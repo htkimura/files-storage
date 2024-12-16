@@ -25,16 +25,29 @@ export class R2Service {
     this.s3Client = s3;
   }
 
-  async generatePresignedUrl(key: string) {
+  generatePresignedUrl(key: string) {
     const command = new GetObjectCommand({
       Bucket: R2_BUCKET_NAME,
       Key: key,
     });
 
-    const signedUrl = await getSignedUrl(this.s3Client as any, command, {
+    return getSignedUrl(this.s3Client as any, command, {
       expiresIn: 100,
     });
+  }
 
-    return signedUrl;
+  generateManyPresignedUrls(keys: string[]) {
+    const promises = keys.map((key) => {
+      const command = new GetObjectCommand({
+        Bucket: R2_BUCKET_NAME,
+        Key: key,
+      });
+
+      return getSignedUrl(this.s3Client as any, command, {
+        expiresIn: 100,
+      });
+    });
+
+    return Promise.all(promises);
   }
 }
