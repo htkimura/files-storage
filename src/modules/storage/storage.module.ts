@@ -6,6 +6,7 @@ import { StorageService } from './storage.service';
 
 @Module({
   controllers: [StorageController],
+  exports: [StorageService],
   providers: [StorageService, R2Service],
 })
 export class StorageModule {}

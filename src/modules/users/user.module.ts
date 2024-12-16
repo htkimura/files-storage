@@ -1,8 +1,11 @@
+import { FileModule } from '@modules/files';
+import { StorageModule } from '@modules/storage';
 import { Module } from '@nestjs/common';
 
 import { AuthService } from './services';
 import {
   CreateUserUseCase,
+  GetManyFilesByUserIdUseCase,
   GetUserByIdUseCase,
   LoginUseCase,
   RefreshTokenUseCase,
@@ -16,9 +19,11 @@ const useCases = [
   LoginUseCase,
   RefreshTokenUseCase,
   GetUserByIdUseCase,
+  GetManyFilesByUserIdUseCase,
 ];
 
 @Module({
+  imports: [FileModule, StorageModule],
   controllers: [UserController],
   exports: [AuthService],
   providers: [...useCases, AuthService, UserService, UserRepository],
