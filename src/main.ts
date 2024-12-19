@@ -13,6 +13,8 @@ async function bootstrap() {
   configSwagger(app);
   app.useGlobalPipes(new ValidationPipe());
 
+  app.enableCors({ origin: 'http://localhost:5173' });
+
   await app.listen(PORT, () => {
     Logger.log(`Server running at http://localhost:${PORT}`);
     Logger.log(`Docs running at http://localhost:${PORT}/docs`);
