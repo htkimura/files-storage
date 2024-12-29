@@ -1,4 +1,8 @@
-import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import {
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import {
   R2_ACCESS_KEY_ID,
@@ -7,7 +11,7 @@ import {
   R2_SECRET_ACCESS_KEY,
 } from '@common/config';
 import { Injectable } from '@nestjs/common';
-
+import { uuid } from 'uuidv4';
 @Injectable()
 export class R2Service {
   private s3Client: S3Client;
@@ -49,5 +53,23 @@ export class R2Service {
     });
 
     return Promise.all(promises);
+  }
+
+  async uploadObject(
+    file: Express.Multer.File,
+    userId: string,
+  ): Promise<string> {
+    const key = `${userId}/${uuid()}-${file.originalname}`;
+
+    const uploadCommand = new PutObjectCommand({
+      Bucket: R2_BUCKET_NAME,
+      Key: key,
+      Body: file.buffer,
+      ContentType: file.mimetype,
+    });
+
+    await this.s3Client.send(uploadCommand);
+
+    return this.generatePresignedUrl(key);
   }
 }
