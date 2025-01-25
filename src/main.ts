@@ -3,6 +3,7 @@ import { type INestApplication, Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { config } from 'dotenv';
+import { stringify as jsonToYaml } from 'yaml';
 
 import { AppModule } from './app.module';
 config();
@@ -31,6 +32,11 @@ const configSwagger = (app: INestApplication<any>) => {
 
   const documentFactory = () =>
     SwaggerModule.createDocument(app, swaggerConfig);
+
+  app.use('/docs/swagger.yml', (_, res) => {
+    const yamlDocument = jsonToYaml(documentFactory());
+    res.type('text/yaml').send(yamlDocument);
+  });
 
   SwaggerModule.setup('docs', app, documentFactory);
 };
