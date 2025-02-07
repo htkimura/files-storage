@@ -17,7 +17,9 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "lint-rest-client": "eslint \"{rest-client}/**/*.ts\" --fix",
+    "generate-rest-client": "orval --clean"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.665.0",
@@ -55,6 +57,7 @@
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "jest": "^29.5.0",
+    "orval": "^7.4.1",
     "prettier": "^3.0.0",
     "prisma": "^5.22.0",
     "source-map-support": "^0.5.21",
