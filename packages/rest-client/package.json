@@ -1,0 +1,11 @@
+{
+	"name": "@htkimura/files-storage-backend.rest-client",
+	"version": "0.0.0",
+	"description": "REST client of files-storage-backend",
+	"author": "Henry Kimura",
+	"license": "MIT",
+	"dependencies": {
+		"@tanstack/react-query": "^5.66.0",
+		"axios": "^1.7.9"
+	}
+}
