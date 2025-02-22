@@ -14,4 +14,10 @@ export class FileRepository {
       },
     });
   }
+
+  create(data: Omit<File, 'id'>): Promise<File> {
+    return this.prismaService.file.create({
+      data,
+    });
+  }
 }
