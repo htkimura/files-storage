@@ -13,6 +13,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   configSwagger(app);
+
   app.useGlobalPipes(new ValidationPipe());
 
   app.enableCors({ origin: 'http://localhost:5173' });
@@ -41,7 +42,5 @@ const configSwagger = (app: INestApplication<any>) => {
     );
 
     Logger.log('Swagger JSON generated');
-
-    process.exit(0);
   }
 };
