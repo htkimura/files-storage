@@ -3,26 +3,63 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id String @id @default(uuid()) @map("_id") 
+  id String @id @default(uuid()) @map("id") 
   email String @unique
   password String
   refreshToken String? @map("refresh_token")
+  createdAt  DateTime     @default(now()) @map("created_at")
+  updatedAt  DateTime     @default(now()) @updatedAt @map("updated_at")
 
+  folders Folder[]
+  documents Document[]
   files File[]
   @@map("users")
 }
 
+model Folder {
+  id String @id @default(uuid()) @map("id") 
+  title String
+  userId String @map("user_id")
+  user User @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt  DateTime     @default(now()) @updatedAt @map("updated_at")
+
+  documents Document[]
+  @@map("folders")
+}
+
+model Document {
+  id String @id @default(uuid()) @map("id") 
+  title String
+  description String?
+  userId String @map("user_id")
+  user User @relation(fields: [userId], references: [id])
+  folderId String? @map("folder_id")
+  folder Folder? @relation(fields: [folderId], references: [id])
+  latestVersionId String @map("latest_version_id")
+  createdAt DateTime @default(now())
+  updatedAt  DateTime     @default(now()) @updatedAt @map("updated_at")
+
+  files File[]
+  @@unique([userId, title])
+  @@map("documents")
+}
+
 model File {
-  id String @id @default(uuid()) @map("_id") 
-  name String
+  id String @id @default(uuid()) @map("id") 
   path String
   userId String @map("user_id")
   user User @relation(fields: [userId], references: [id])
+  documentId String @map("document_id")
+  document Document @relation(fields: [documentId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt  DateTime     @default(now()) @updatedAt @map("updated_at")
+
 
   @@map("files")
 }

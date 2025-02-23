@@ -1,23 +1,42 @@
-import { PrismaService } from '@modules/prisma';
+import { BaseRepositoryPrisma } from '@common/classes';
 import { Injectable } from '@nestjs/common';
 
 import { File } from './file.model';
 
-@Injectable()
-export class FileRepository {
-  constructor(private readonly prismaService: PrismaService) {}
+interface CreateFileInput extends Omit<File, 'id' | 'createdAt'> {
+  createdAt?: Date;
+}
 
-  getManyByUserId(userId: string): Promise<File[]> {
-    return this.prismaService.file.findMany({
+@Injectable()
+export class FileRepository extends BaseRepositoryPrisma(File, 'file') {
+  async getManyByUserId(userId: string): Promise<File[]> {
+    const data = await this.prismaService.file.findMany({
       where: {
         userId,
       },
     });
+    return this.formatMany(data);
   }
 
-  create(data: Omit<File, 'id'>): Promise<File> {
-    return this.prismaService.file.create({
+  async getManyLatestByDocumentIds(documentIds: string[]): Promise<File[]> {
+    const data = await this.prismaService.file.findMany({
+      where: {
+        documentId: {
+          in: documentIds,
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    return this.formatMany(data);
+  }
+
+  async create(data: CreateFileInput): Promise<File> {
+    const file = await this.prismaService.file.create({
       data,
     });
+    return this.format(file);
   }
 }

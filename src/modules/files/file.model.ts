@@ -5,11 +5,14 @@ export class File {
   id: string;
 
   @ApiProperty()
-  name: string;
-
-  @ApiProperty()
   path: string;
 
   @ApiProperty()
   userId: string;
+
+  @ApiProperty()
+  documentId: string;
+
+  @ApiProperty()
+  createdAt: Date;
 }

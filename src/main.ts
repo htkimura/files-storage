@@ -12,7 +12,9 @@ config();
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  configSwagger(app);
+  const document = configSwagger(app);
+
+  SwaggerModule.setup('docs', app, document);
 
   app.useGlobalPipes(new ValidationPipe());
 
@@ -35,12 +37,16 @@ const configSwagger = (app: INestApplication<any>) => {
   const documentFactory = () =>
     SwaggerModule.createDocument(app, swaggerConfig);
 
+  const document = documentFactory();
+
   if (process.env.NODE_ENV !== 'production') {
     writeFileSync(
       './generated-swagger.json',
-      JSON.stringify(documentFactory(), null, 2),
+      JSON.stringify(document, null, 2),
     );
 
     Logger.log('Swagger JSON generated');
   }
+
+  return document;
 };

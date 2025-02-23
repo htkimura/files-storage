@@ -1,12 +1,12 @@
 import { AuthUser } from '@common/decorators';
 import { AuthGuard } from '@common/guards';
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { CreateUserDto, LoginDto, RefreshTokenDto } from './dto';
 import { User, UserLogin } from './user.model';
 import { UserService } from './user.service';
-
+@ApiTags('Users')
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -64,22 +64,7 @@ export class UserController {
     status: 200,
     type: User,
   })
-  me(@AuthUser('_id') userId: string) {
+  me(@AuthUser('id') userId: string) {
     return this.userService.getUserById({ userId });
-  }
-
-  @Get('me/files')
-  @UseGuards(AuthGuard)
-  @ApiOperation({
-    operationId: 'myFiles',
-    summary: 'Get the authenticated user files URLs',
-    description: 'Returns the authenticated user files URLs',
-  })
-  @ApiResponse({
-    status: 200,
-    type: [String],
-  })
-  myFiles(@AuthUser('_id') userId: string) {
-    return this.userService.getUserFiles({ userId });
   }
 }

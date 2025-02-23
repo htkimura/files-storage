@@ -1,13 +1,8 @@
+import { Entity } from '@common/classes';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 
-export class User {
-  @ApiProperty()
-  id: string;
-
-  @ApiProperty()
-  _id: string;
-
+export class User extends Entity {
   @ApiProperty()
   email: string;
 

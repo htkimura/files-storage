@@ -10,14 +10,13 @@ import {
   R2_BUCKET_NAME,
   R2_SECRET_ACCESS_KEY,
 } from '@common/config';
-import { FileService } from '@modules/files';
 import { Injectable } from '@nestjs/common';
 import { uuid } from 'uuidv4';
 @Injectable()
 export class R2Service {
   private s3Client: S3Client;
 
-  constructor(private readonly fileService: FileService) {
+  constructor() {
     const s3 = new S3Client({
       endpoint: `https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
       credentials: {
@@ -60,7 +59,7 @@ export class R2Service {
     file: Express.Multer.File,
     userId: string,
   ): Promise<string> {
-    const key = `${userId}/${uuid()}-${file.originalname}`;
+    const key = this.generatePath(userId, file.originalname);
 
     const uploadCommand = new PutObjectCommand({
       Bucket: R2_BUCKET_NAME,
@@ -71,12 +70,10 @@ export class R2Service {
 
     await this.s3Client.send(uploadCommand);
 
-    await this.fileService.create({
-      name: file.originalname,
-      path: key,
-      userId,
-    });
-
     return this.generatePresignedUrl(key);
+  }
+
+  generatePath(userId: string, fileName: string, fileId?: string) {
+    return `${userId}/${fileId || uuid()}-${fileName}`;
   }
 }

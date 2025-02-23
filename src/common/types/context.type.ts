@@ -5,7 +5,7 @@ export type TokenStatus = 'valid' | 'invalid' | 'expired' | 'missing';
 export interface JUser {
   iss: string;
   email: string;
-  _id: string;
+  id: string;
   /**
    * User Id
    */

@@ -18,19 +18,19 @@ export class AuthService {
   generateUserTokens(user: User): { token: string; refreshToken: string } {
     const token = this.jwtService.sign(
       {
-        _id: user._id,
+        id: user.id,
         email: user.email,
       },
-      { subject: user._id },
+      { subject: user.id },
     );
 
     const refreshToken = this.jwtService.sign(
       {
-        _id: user._id,
+        id: user.id,
         email: user.email,
       },
       {
-        subject: user._id,
+        subject: user.id,
         expiresIn: AUTH_EXPIRES_IN,
         secret: AUTH_JWT_REFRESH_SECRET,
       },

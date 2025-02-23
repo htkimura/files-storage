@@ -20,7 +20,7 @@ export class RefreshTokenUseCase {
 
     if (!isValid.user) return null;
 
-    const user = await this.userRepository.getById(isValid.user._id);
+    const user = await this.userRepository.getById(isValid.user.id);
 
     if (refreshToken !== user.refreshToken) {
       throw new BadRequestException('Invalid refresh token');

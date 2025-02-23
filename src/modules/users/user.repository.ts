@@ -1,4 +1,5 @@
-import { PrismaService, User as PrismaUser } from '@modules/prisma';
+import { BaseRepositoryPrisma } from '@common/classes';
+import { User as PrismaUser } from '@modules/prisma';
 import { Injectable } from '@nestjs/common';
 
 import { CreateUserDto } from './dto';
@@ -9,15 +10,13 @@ export interface UserWithPassword extends User {
 }
 
 @Injectable()
-export class UserRepository {
-  constructor(private readonly prismaService: PrismaService) {}
-
+export class UserRepository extends BaseRepositoryPrisma(User, 'user') {
   async createUser(input: CreateUserDto): Promise<User> {
     const user = await this.prismaService.user.create({
       data: input,
     });
 
-    return this.transformUser(user);
+    return this.format(this.transformUser(user));
   }
 
   async getByEmail(
@@ -30,7 +29,7 @@ export class UserRepository {
 
     if (!user) return null;
 
-    return this.transformUser(user, includePassword);
+    return this.format(this.transformUser(user, includePassword));
   }
 
   async getById(id: string): Promise<User | null> {
@@ -40,7 +39,7 @@ export class UserRepository {
 
     if (!user) return null;
 
-    return this.transformUser(user);
+    return this.format(this.transformUser(user));
   }
 
   async updateById(id: string, data: Partial<User>) {
@@ -49,13 +48,13 @@ export class UserRepository {
       data,
     });
 
-    return this.transformUser(user);
+    return this.format(this.transformUser(user));
   }
 
   transformUser(user: PrismaUser, includePassword?: boolean) {
     const { password, ...userWithoutPassword } = user;
 
-    const baseUserWithoutPassword = { ...userWithoutPassword, _id: user.id };
+    const baseUserWithoutPassword = { ...userWithoutPassword, id: user.id };
 
     if (!includePassword) return baseUserWithoutPassword;
 
