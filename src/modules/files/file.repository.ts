@@ -15,6 +15,12 @@ export class FileRepository {
     });
   }
 
+  getById(fileId: string): Promise<File> {
+    return this.prismaService.file.findUnique({
+      where: { id: fileId },
+    });
+  }
+
   create(data: Omit<File, 'id'>): Promise<File> {
     return this.prismaService.file.create({
       data,
