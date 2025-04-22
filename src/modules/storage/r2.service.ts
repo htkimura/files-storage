@@ -30,17 +30,6 @@ export class R2Service {
     this.s3Client = s3;
   }
 
-  generatePresignedUrl(key: string) {
-    const command = new GetObjectCommand({
-      Bucket: R2_BUCKET_NAME,
-      Key: key,
-    });
-
-    return getSignedUrl(this.s3Client as any, command, {
-      expiresIn: 100,
-    });
-  }
-
   generateManyPresignedUrls(keys: string[]) {
     const promises = keys.map((key) => {
       const command = new GetObjectCommand({
@@ -56,27 +45,41 @@ export class R2Service {
     return Promise.all(promises);
   }
 
-  async uploadObject(
-    file: Express.Multer.File,
+  async createPresignedUpdate(
     userId: string,
-  ): Promise<string> {
-    const key = `${userId}/${uuid()}-${file.originalname}`;
+    file: { name: string; type: string; size: number },
+  ) {
+    const key = `${userId}/${uuid()}-${file.name}`;
 
-    const uploadCommand = new PutObjectCommand({
+    const command = new PutObjectCommand({
       Bucket: R2_BUCKET_NAME,
       Key: key,
-      Body: file.buffer,
-      ContentType: file.mimetype,
+      ContentType: file.type,
     });
 
-    await this.s3Client.send(uploadCommand);
+    const url = await getSignedUrl(this.s3Client as any, command, {
+      expiresIn: 60 * 5,
+    });
 
-    await this.fileService.create({
-      name: file.originalname,
-      path: key,
+    const uploadedFile = await this.fileService.create({
+      ...file,
       userId,
+      path: key,
     });
 
-    return this.generatePresignedUrl(key);
+    return { url, id: uploadedFile.id };
+  }
+
+  async generateReadPresignedUrl(fileId: string) {
+    const file = await this.fileService.getById(fileId);
+
+    const command = new GetObjectCommand({
+      Bucket: R2_BUCKET_NAME,
+      Key: file.path,
+    });
+
+    return getSignedUrl(this.s3Client as any, command, {
+      expiresIn: 60 * 5,
+    });
   }
 }

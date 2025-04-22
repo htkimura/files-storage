@@ -1,15 +1,7 @@
 import { AuthUser } from '@common/decorators';
 import { AuthGuard } from '@common/guards';
-import {
-  Controller,
-  Get,
-  Param,
-  Post,
-  UploadedFile,
-  UseGuards,
-  UseInterceptors,
-} from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { JUser } from '@common/types';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 
 import { StorageService } from './storage.service';
 
@@ -17,22 +9,19 @@ import { StorageService } from './storage.service';
 export class StorageController {
   constructor(private readonly storageService: StorageService) {}
 
-  @Get('objects/:objectName')
+  @Get('uploads/presigned-url')
   @UseGuards(AuthGuard)
-  getObjectUrl(
-    @AuthUser('_id') userId: string,
-    @Param('objectName') objectName: string,
-  ): Promise<string> {
-    return this.storageService.generatePresignedUrl(`${userId}/${objectName}`);
-  }
-
-  @Post('objects')
-  @UseGuards(AuthGuard)
-  @UseInterceptors(FileInterceptor('file'))
-  uploadObject(
-    @AuthUser('_id') userId: string,
-    @UploadedFile() file: Express.Multer.File,
-  ): Promise<string> {
-    return this.storageService.uploadObject(file, userId);
+  getPresignedUrl(
+    @Query('fileName') name: string,
+    @Query('fileType') type: string,
+    @Query('fileSize', { transform: (size) => Number(size) })
+    size: number,
+    @AuthUser() user: JUser,
+  ) {
+    return this.storageService.createPresignedUpdate(user._id, {
+      name,
+      type,
+      size,
+    });
   }
 }
