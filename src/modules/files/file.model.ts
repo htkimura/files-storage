@@ -8,6 +8,12 @@ export class File {
   name: string;
 
   @ApiProperty()
+  type: string;
+
+  @ApiProperty()
+  size: number;
+
+  @ApiProperty()
   path: string;
 
   @ApiProperty()

@@ -20,9 +20,12 @@ model User {
 model File {
   id String @id @default(uuid()) @map("_id") 
   name String
+  type String
+  size Int
   path String
   userId String @map("user_id")
   user User @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
 
   @@map("files")
 }
