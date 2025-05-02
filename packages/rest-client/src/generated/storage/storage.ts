@@ -6,15 +6,11 @@
  * OpenAPI spec version: 1.0
  */
 import {
-  useMutation,
   useQuery
 } from '@tanstack/react-query'
 import type {
-  MutationFunction,
   QueryFunction,
   QueryKey,
-  UseMutationOptions,
-  UseMutationResult,
   UseQueryOptions,
   UseQueryResult
 } from '@tanstack/react-query'
@@ -24,54 +20,59 @@ import type {
   AxiosRequestConfig,
   AxiosResponse
 } from 'axios'
+import type {
+  StorageControllerGetPresignedUrlParams
+} from '.././model'
 
 
 
-export const storageControllerGetObjectUrl = (
-    objectName: string, options?: AxiosRequestConfig
+export const storageControllerGetPresignedUrl = (
+    params: StorageControllerGetPresignedUrlParams, options?: AxiosRequestConfig
  ): Promise<AxiosResponse<void>> => {
     
     
     return axios.get(
-      `/objects/${objectName}`,options
+      `/uploads/presigned-url`,{
+    ...options,
+        params: {...params, ...options?.params},}
     );
   }
 
 
-export const getStorageControllerGetObjectUrlQueryKey = (objectName: string,) => {
-    return [`/objects/${objectName}`] as const;
+export const getStorageControllerGetPresignedUrlQueryKey = (params: StorageControllerGetPresignedUrlParams,) => {
+    return [`/uploads/presigned-url`, ...(params ? [params]: [])] as const;
     }
 
     
-export const getStorageControllerGetObjectUrlQueryOptions = <TData = Awaited<ReturnType<typeof storageControllerGetObjectUrl>>, TError = AxiosError<unknown>>(objectName: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof storageControllerGetObjectUrl>>, TError, TData>, axios?: AxiosRequestConfig}
+export const getStorageControllerGetPresignedUrlQueryOptions = <TData = Awaited<ReturnType<typeof storageControllerGetPresignedUrl>>, TError = AxiosError<unknown>>(params: StorageControllerGetPresignedUrlParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof storageControllerGetPresignedUrl>>, TError, TData>, axios?: AxiosRequestConfig}
 ) => {
 
 const {query: queryOptions, axios: axiosOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getStorageControllerGetObjectUrlQueryKey(objectName);
+  const queryKey =  queryOptions?.queryKey ?? getStorageControllerGetPresignedUrlQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof storageControllerGetObjectUrl>>> = ({ signal }) => storageControllerGetObjectUrl(objectName, { signal, ...axiosOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof storageControllerGetPresignedUrl>>> = ({ signal }) => storageControllerGetPresignedUrl(params, { signal, ...axiosOptions });
 
       
 
       
 
-   return  { queryKey, queryFn, enabled: !!(objectName), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof storageControllerGetObjectUrl>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof storageControllerGetPresignedUrl>>, TError, TData> & { queryKey: QueryKey }
 }
 
-export type StorageControllerGetObjectUrlQueryResult = NonNullable<Awaited<ReturnType<typeof storageControllerGetObjectUrl>>>
-export type StorageControllerGetObjectUrlQueryError = AxiosError<unknown>
+export type StorageControllerGetPresignedUrlQueryResult = NonNullable<Awaited<ReturnType<typeof storageControllerGetPresignedUrl>>>
+export type StorageControllerGetPresignedUrlQueryError = AxiosError<unknown>
 
 
 
-export function useStorageControllerGetObjectUrl<TData = Awaited<ReturnType<typeof storageControllerGetObjectUrl>>, TError = AxiosError<unknown>>(
- objectName: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof storageControllerGetObjectUrl>>, TError, TData>, axios?: AxiosRequestConfig}
+export function useStorageControllerGetPresignedUrl<TData = Awaited<ReturnType<typeof storageControllerGetPresignedUrl>>, TError = AxiosError<unknown>>(
+ params: StorageControllerGetPresignedUrlParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof storageControllerGetPresignedUrl>>, TError, TData>, axios?: AxiosRequestConfig}
 
   ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  const queryOptions = getStorageControllerGetObjectUrlQueryOptions(objectName,options)
+  const queryOptions = getStorageControllerGetPresignedUrlQueryOptions(params,options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 
@@ -82,57 +83,3 @@ export function useStorageControllerGetObjectUrl<TData = Awaited<ReturnType<type
 
 
 
-export const storageControllerUploadObject = (
-     options?: AxiosRequestConfig
- ): Promise<AxiosResponse<void>> => {
-    
-    
-    return axios.post(
-      `/objects`,undefined,options
-    );
-  }
-
-
-
-export const getStorageControllerUploadObjectMutationOptions = <TData = Awaited<ReturnType<typeof storageControllerUploadObject>>, TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,void, TContext>, axios?: AxiosRequestConfig}
-) => {
-const mutationKey = ['storageControllerUploadObject'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof storageControllerUploadObject>>, void> = () => {
-          
-
-          return  storageControllerUploadObject(axiosOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions } as UseMutationOptions<TData, TError,void, TContext>}
-
-    export type StorageControllerUploadObjectMutationResult = NonNullable<Awaited<ReturnType<typeof storageControllerUploadObject>>>
-    
-    export type StorageControllerUploadObjectMutationError = AxiosError<unknown>
-
-    export const useStorageControllerUploadObject = <TData = Awaited<ReturnType<typeof storageControllerUploadObject>>, TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,void, TContext>, axios?: AxiosRequestConfig}
-): UseMutationResult<
-        TData,
-        TError,
-        void,
-        TContext
-      > => {
-
-      const mutationOptions = getStorageControllerUploadObjectMutationOptions(options);
-
-      return useMutation(mutationOptions);
-    }
-    

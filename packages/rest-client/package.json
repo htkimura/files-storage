@@ -1,6 +1,6 @@
 {
 	"name": "@htkimura/files-storage-backend.rest-client",
-	"version": "0.0.12",
+	"version": "0.0.14",
 	"description": "REST client of files-storage-backend",
 	"author": "Henry Kimura",
 	"license": "MIT",

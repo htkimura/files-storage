@@ -9,5 +9,6 @@
 export * from './createUserDto';
 export * from './loginDto';
 export * from './refreshTokenDto';
+export * from './storageControllerGetPresignedUrlParams';
 export * from './user';
 export * from './userLogin';
