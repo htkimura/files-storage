@@ -19,3 +19,8 @@ export class File {
   @ApiProperty()
   userId: string;
 }
+
+export class FileWithPresignedUrl extends File {
+  @ApiProperty()
+  presignedUrl: string;
+}
