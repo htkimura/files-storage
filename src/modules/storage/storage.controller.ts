@@ -18,7 +18,7 @@ export class StorageController {
     size: number,
     @AuthUser() user: JUser,
   ) {
-    return this.storageService.createPresignedUpdate(user._id, {
+    return this.storageService.createPresignedUpload(user._id, {
       name,
       type,
       size,

@@ -45,7 +45,7 @@ export class R2Service {
     return Promise.all(promises);
   }
 
-  async createPresignedUpdate(
+  async createPresignedUpload(
     userId: string,
     file: { name: string; type: string; size: number },
   ) {
