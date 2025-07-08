@@ -4,5 +4,8 @@
   "sourceRoot": "src",
   "compilerOptions": {
     "deleteOutDir": true
-  }
+  },
+  "ignorePaths": [
+    "packages/rest-client"
+  ]
 }
