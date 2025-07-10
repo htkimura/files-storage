@@ -12,18 +12,18 @@ export class FileRepository {
       where: {
         userId,
       },
-    }) as Promise<File[]>;
+    });
   }
 
   getById(fileId: string): Promise<File> {
     return this.prismaService.file.findUnique({
       where: { id: fileId },
-    }) as Promise<File>;
+    });
   }
 
   create(data: Omit<File, 'id' | 'createdAt' | 'updatedAt'>): Promise<File> {
     return this.prismaService.file.create({
       data,
-    }) as Promise<File>;
+    });
   }
 }
