@@ -32,10 +32,16 @@ const configSwagger = (app: INestApplication<any>) => {
   const documentFactory = () =>
     SwaggerModule.createDocument(app, swaggerConfig);
 
+  const document = documentFactory();
+
+  SwaggerModule.setup('docs', app, document, {
+    customSiteTitle: 'Files Storage docs',
+  });
+
   if (process.env.NODE_ENV !== 'production') {
     writeFileSync(
       './generated-swagger.json',
-      JSON.stringify(documentFactory(), null, 2),
+      JSON.stringify(document, null, 2),
     );
 
     Logger.log('Swagger JSON generated');
