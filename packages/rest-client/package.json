@@ -1,18 +1,23 @@
 {
 	"name": "@htkimura/files-storage-backend.rest-client",
-	"version": "0.0.16",
+	"version": "0.0.20",
 	"description": "REST client of files-storage-backend",
 	"author": "Henry Kimura",
 	"license": "MIT",
-	"scripts": {
-		"publish": "npm publish --access public"
-	},
-	"main": "src/generated/index.ts",
-	"files": [
-		"src/generated"
-	],
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
 	"exports": {
-		".": "./src/generated/index.ts"
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		}
+	},
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"buildPackage": "tsc -p tsconfig.build.json",
+		"publish": "buildPackage && npm publish --access public"
 	},
 	"peerDependencies": {
 		"@tanstack/react-query": "^5.66.0",
@@ -23,7 +28,6 @@
 		"axios": "^1.7.9"
 	},
 	"devDependencies": {
-		"@tanstack/react-query": "^5.66.0",
 		"@types/node": "^22.13.5",
 		"@types/react": "^19.0.10",
 		"@types/react-dom": "^19.0.4",
