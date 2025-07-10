@@ -21,6 +21,12 @@ export class FileRepository {
     });
   }
 
+  getByIds(ids: string[]): Promise<File[]> {
+    return this.prismaService.file.findMany({
+      where: { id: { in: ids } },
+    });
+  }
+
   create(data: Omit<File, 'id' | 'createdAt' | 'updatedAt'>): Promise<File> {
     const now = new Date();
 
