@@ -1,9 +1,7 @@
+import { Entity } from '@common/models';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class File {
-  @ApiProperty()
-  id: string;
-
+export class File extends Entity {
   @ApiProperty()
   name: string;
 
