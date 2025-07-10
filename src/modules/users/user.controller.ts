@@ -1,5 +1,6 @@
 import { AuthUser } from '@common/decorators';
 import { AuthGuard } from '@common/guards';
+import { File } from '@modules/files';
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
@@ -77,7 +78,7 @@ export class UserController {
   })
   @ApiResponse({
     status: 200,
-    type: [String],
+    type: [File],
   })
   myFiles(@AuthUser('_id') userId: string) {
     return this.userService.getUserFiles({ userId });
