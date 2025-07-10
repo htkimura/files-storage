@@ -25,7 +25,7 @@ const useCases = [
 @Module({
   imports: [FileModule, StorageModule],
   controllers: [UserController],
-  exports: [AuthService],
+  exports: [AuthService, UserService],
   providers: [...useCases, AuthService, UserService, UserRepository],
 })
 export class UserModule {}
