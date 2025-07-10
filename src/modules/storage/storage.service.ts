@@ -3,20 +3,27 @@ import { Injectable } from '@nestjs/common';
 
 import { R2Service } from './r2.service';
 import {
+  GetBulkFilesByIdsArgs,
+  GetBulkFilesByIdsUseCase,
   GetFileByIdArgs,
   GetFileByIdUseCase,
-} from './use-cases/get-file-by-id.use-case';
+} from './use-cases';
 
 @Injectable()
 export class StorageService extends R2Service {
   constructor(
-    private readonly getFileByIdUseCase: GetFileByIdUseCase,
     fileService: FileService,
+    private readonly getFileByIdUseCase: GetFileByIdUseCase,
+    private readonly getBulkFilesByIdsUseCase: GetBulkFilesByIdsUseCase,
   ) {
     super(fileService);
   }
 
   async getFileById({ fileId, userId }: GetFileByIdArgs) {
     return this.getFileByIdUseCase.execute({ fileId, userId });
+  }
+
+  async getBulkFilesByIds({ ids, userId }: GetBulkFilesByIdsArgs) {
+    return this.getBulkFilesByIdsUseCase.execute({ ids, userId });
   }
 }

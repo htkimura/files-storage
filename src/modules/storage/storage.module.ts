@@ -5,9 +5,9 @@ import { forwardRef, Module } from '@nestjs/common';
 import { R2Service } from './r2.service';
 import { StorageController } from './storage.controller';
 import { StorageService } from './storage.service';
-import { GetFileByIdUseCase } from './use-cases';
+import { GetBulkFilesByIdsUseCase, GetFileByIdUseCase } from './use-cases';
 
-const useCases = [GetFileByIdUseCase];
+const useCases = [GetBulkFilesByIdsUseCase, GetFileByIdUseCase];
 
 @Module({
   imports: [FileModule, forwardRef(() => UserModule)],
