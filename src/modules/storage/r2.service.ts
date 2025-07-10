@@ -49,7 +49,8 @@ export class R2Service {
     userId: string,
     file: { name: string; type: string; size: number },
   ) {
-    const key = `${userId}/${uuid()}-${file.name}`;
+    const now = new Date();
+    const key = `uploads/${userId}/${now.getUTCFullYear()}/${now.getUTCMonth() + 1}/originals/${uuid()}-${file.name}`;
 
     const command = new PutObjectCommand({
       Bucket: R2_BUCKET_NAME,
