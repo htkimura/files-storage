@@ -1,7 +1,7 @@
 import { AuthUser } from '@common/decorators';
 import { AuthGuard } from '@common/guards';
 import { JUser } from '@common/types';
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 
 import { StorageService } from './storage.service';
 
@@ -23,5 +23,11 @@ export class StorageController {
       type,
       size,
     });
+  }
+
+  @Get('files/:id')
+  @UseGuards(AuthGuard)
+  getFileById(@Param('id') id: string, @AuthUser() user: JUser) {
+    return this.storageService.getFileById({ fileId: id, userId: user._id });
   }
 }

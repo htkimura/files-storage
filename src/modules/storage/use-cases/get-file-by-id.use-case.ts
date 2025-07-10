@@ -27,7 +27,7 @@ export class GetFileByIdUseCase {
 
     const file = await this.fileService.getById(fileId);
 
-    if (file.userId !== userId) throw new NotFoundException('File not found');
+    if (file?.userId !== userId) throw new NotFoundException('File not found');
 
     const presignedUrl = await this.r2Service.generateReadPresignedUrl(
       file.path,
