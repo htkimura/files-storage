@@ -71,12 +71,10 @@ export class R2Service {
     return { url, id: uploadedFile.id };
   }
 
-  async generateReadPresignedUrl(fileId: string) {
-    const file = await this.fileService.getById(fileId);
-
+  async generateReadPresignedUrl(filePath: string) {
     const command = new GetObjectCommand({
       Bucket: R2_BUCKET_NAME,
-      Key: file.path,
+      Key: filePath,
     });
 
     return getSignedUrl(this.s3Client as any, command, {
