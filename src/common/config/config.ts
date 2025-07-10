@@ -1,5 +1,6 @@
 import { config } from 'dotenv';
 
+console.log('==> CONFIG');
 config();
 
 export const {
@@ -15,3 +16,5 @@ export const {
   AUTH_HEADER = 'authorization',
   AUTH_EXPIRES_IN = '14d',
 } = process.env;
+
+console.log('[PORT, NODE]', PORT, NODE_ENV);
