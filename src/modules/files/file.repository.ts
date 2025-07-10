@@ -22,8 +22,14 @@ export class FileRepository {
   }
 
   create(data: Omit<File, 'id' | 'createdAt' | 'updatedAt'>): Promise<File> {
+    const now = new Date();
+
     return this.prismaService.file.create({
-      data,
+      data: {
+        ...data,
+        createdAt: now,
+        updatedAt: now,
+      },
     });
   }
 }
