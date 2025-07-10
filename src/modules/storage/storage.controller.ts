@@ -25,6 +25,12 @@ export class StorageController {
     });
   }
 
+  @Get('files/bulk')
+  @UseGuards(AuthGuard)
+  getBulkFilesByIds(@Query('ids') ids: string[], @AuthUser() user: JUser) {
+    return this.storageService.getBulkFilesByIds({ ids, userId: user._id });
+  }
+
   @Get('files/:id')
   @UseGuards(AuthGuard)
   getFileById(@Param('id') id: string, @AuthUser() user: JUser) {
