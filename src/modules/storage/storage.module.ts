@@ -6,6 +6,7 @@ import { R2Service } from './r2.service';
 import { StorageController } from './storage.controller';
 import { StorageService } from './storage.service';
 import {
+  DeleteBulkFilesByIdsUseCase,
   DeleteFileByIdUseCase,
   GetBulkFilesByIdsUseCase,
   GetFileByIdUseCase,
@@ -13,6 +14,7 @@ import {
 } from './use-cases';
 
 const useCases = [
+  DeleteBulkFilesByIdsUseCase,
   DeleteFileByIdUseCase,
   GetBulkFilesByIdsUseCase,
   GetFileByIdUseCase,

@@ -1,5 +1,6 @@
 import {
   DeleteObjectCommand,
+  DeleteObjectsCommand,
   GetObjectCommand,
   PutObjectCommand,
   S3Client,
@@ -89,5 +90,21 @@ export class R2Service {
     });
 
     return this.s3Client.send(command);
+  }
+
+  async deleteBulkFiles(filePaths: string[]) {
+    const command = new DeleteObjectsCommand({
+      Bucket: R2_BUCKET_NAME,
+      Delete: {
+        Objects: filePaths.map((filePath) => ({ Key: filePath })),
+      },
+    });
+
+    const output = await this.s3Client.send(command);
+
+    return {
+      deletedKeys: output.Deleted?.map((deleted) => deleted.Key),
+      errors: output.Errors?.map((error) => error.Key),
+    };
   }
 }
