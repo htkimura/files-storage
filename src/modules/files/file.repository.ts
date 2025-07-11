@@ -24,6 +24,14 @@ export class FileRepository {
     });
   }
 
+  getCountByUserId(userId: string): Promise<number> {
+    return this.prismaService.file.count({
+      where: {
+        userId,
+      },
+    });
+  }
+
   getById(fileId: string): Promise<File> {
     return this.prismaService.file.findUnique({
       where: { id: fileId },
