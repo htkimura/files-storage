@@ -1,4 +1,5 @@
 import {
+  DeleteObjectCommand,
   GetObjectCommand,
   PutObjectCommand,
   S3Client,
@@ -84,5 +85,14 @@ export class R2Service {
     return getSignedUrl(this.s3Client as any, command, {
       expiresIn: 60 * 5,
     });
+  }
+
+  deleteFile(filePath: string) {
+    const command = new DeleteObjectCommand({
+      Bucket: R2_BUCKET_NAME,
+      Key: filePath,
+    });
+
+    return this.s3Client.send(command);
   }
 }
