@@ -5,9 +5,17 @@ import { forwardRef, Module } from '@nestjs/common';
 import { R2Service } from './r2.service';
 import { StorageController } from './storage.controller';
 import { StorageService } from './storage.service';
-import { GetBulkFilesByIdsUseCase, GetFileByIdUseCase } from './use-cases';
+import {
+  DeleteFileByIdUseCase,
+  GetBulkFilesByIdsUseCase,
+  GetFileByIdUseCase,
+} from './use-cases';
 
-const useCases = [GetBulkFilesByIdsUseCase, GetFileByIdUseCase];
+const useCases = [
+  DeleteFileByIdUseCase,
+  GetBulkFilesByIdsUseCase,
+  GetFileByIdUseCase,
+];
 
 @Module({
   imports: [FileModule, forwardRef(() => UserModule)],
