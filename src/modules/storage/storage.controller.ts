@@ -2,7 +2,7 @@ import { AuthUser } from '@common/decorators';
 import { AuthGuard } from '@common/guards';
 import { JUser } from '@common/types';
 import { FileWithPresignedUrl } from '@modules/files';
-import { UploadFileOutput } from '@modules/files/models';
+import { DeleteBulkFilesOutput, UploadFileOutput } from '@modules/files/models';
 import {
   Controller,
   Delete,
@@ -76,6 +76,21 @@ export class StorageController {
   })
   getFileById(@Param('id') id: string, @AuthUser() user: JUser) {
     return this.storageService.getFileById({ fileId: id, userId: user._id });
+  }
+
+  @Delete('files/bulk')
+  @UseGuards(AuthGuard)
+  @ApiOperation({
+    operationId: 'deleteBulkFilesByIds',
+    summary: 'Delete files by ids',
+    description: 'Delete files on database and storage service by ids',
+  })
+  @ApiResponse({
+    status: 200,
+    type: DeleteBulkFilesOutput,
+  })
+  deleteBulkFilesByIds(@Query('ids') ids: string[], @AuthUser() user: JUser) {
+    return this.storageService.deleteBulkFilesByIds({ ids, userId: user._id });
   }
 
   @Delete('files/:id')

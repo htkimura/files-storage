@@ -3,6 +3,8 @@ import { Injectable } from '@nestjs/common';
 
 import { R2Service } from './r2.service';
 import {
+  DeleteBulkFilesByIdsArgs,
+  DeleteBulkFilesByIdsUseCase,
   DeleteFileByIdArgs,
   DeleteFileByIdUseCase,
   GetBulkFilesByIdsArgs,
@@ -18,6 +20,7 @@ export class StorageService extends R2Service {
   constructor(
     fileService: FileService,
     private readonly deleteFileByIdUseCase: DeleteFileByIdUseCase,
+    private readonly deleteBulkFilesByIdsUseCase: DeleteBulkFilesByIdsUseCase,
     private readonly getBulkFilesByIdsUseCase: GetBulkFilesByIdsUseCase,
     private readonly getFileByIdUseCase: GetFileByIdUseCase,
     private readonly getPresignedUploadUrlUseCase: GetPresignedUploadUrlUseCase,
@@ -27,6 +30,10 @@ export class StorageService extends R2Service {
 
   async deleteFileById(input: DeleteFileByIdArgs) {
     return this.deleteFileByIdUseCase.execute(input);
+  }
+
+  async deleteBulkFilesByIds(input: DeleteBulkFilesByIdsArgs) {
+    return this.deleteBulkFilesByIdsUseCase.execute(input);
   }
 
   async getFileById(input: GetFileByIdArgs) {
