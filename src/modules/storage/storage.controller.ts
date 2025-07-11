@@ -2,6 +2,7 @@ import { AuthUser } from '@common/decorators';
 import { AuthGuard } from '@common/guards';
 import { JUser } from '@common/types';
 import { FileWithPresignedUrl } from '@modules/files';
+import { UploadFileOutput } from '@modules/files/models';
 import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
@@ -14,15 +15,15 @@ export class StorageController {
   @Get('uploads/presigned-url')
   @UseGuards(AuthGuard)
   @ApiOperation({
-    operationId: 'getPresignedUrl',
+    operationId: 'getPresignedUploadUrl',
     summary: 'Get presigned url to upload file',
     description: 'Returns presigned url to upload file',
   })
   @ApiResponse({
     status: 200,
-    type: String,
+    type: UploadFileOutput,
   })
-  getPresignedUrl(
+  getPresignedUploadUrl(
     @Query('fileName') name: string,
     @Query('fileType') type: string,
     @Query('fileSize', { transform: (size) => Number(size) })

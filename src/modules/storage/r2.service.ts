@@ -58,9 +58,13 @@ export class R2Service {
       ContentType: file.type,
     });
 
-    const url = await getSignedUrl(this.s3Client as any, command, {
-      expiresIn: 60 * 5,
-    });
+    const presignedUploadUrl = await getSignedUrl(
+      this.s3Client as any,
+      command,
+      {
+        expiresIn: 60 * 5,
+      },
+    );
 
     const uploadedFile = await this.fileService.create({
       ...file,
@@ -68,7 +72,7 @@ export class R2Service {
       path: key,
     });
 
-    return { url, id: uploadedFile.id };
+    return { presignedUploadUrl, file: uploadedFile };
   }
 
   async generateReadPresignedUrl(filePath: string) {
