@@ -6,11 +6,15 @@
  * OpenAPI spec version: 1.0
  */
 import {
+  useMutation,
   useQuery
 } from '@tanstack/react-query'
 import type {
+  MutationFunction,
   QueryFunction,
   QueryKey,
+  UseMutationOptions,
+  UseMutationResult,
   UseQueryOptions,
   UseQueryResult
 } from '@tanstack/react-query'
@@ -21,9 +25,12 @@ import type {
   AxiosResponse
 } from 'axios'
 import type {
+  DeleteBulkFilesByIdsParams,
+  DeleteBulkFilesOutput,
   FileWithPresignedUrl,
   GetBulkFilesByIdsParams,
-  GetPresignedUrlParams
+  GetPresignedUploadUrlParams,
+  UploadFileOutput
 } from '.././model'
 
 
@@ -32,9 +39,9 @@ import type {
  * Returns presigned url to upload file
  * @summary Get presigned url to upload file
  */
-export const getPresignedUrl = (
-    params: GetPresignedUrlParams, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<string>> => {
+export const getPresignedUploadUrl = (
+    params: GetPresignedUploadUrlParams, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<UploadFileOutput>> => {
     
     
     return axios.get(
@@ -45,43 +52,43 @@ export const getPresignedUrl = (
   }
 
 
-export const getGetPresignedUrlQueryKey = (params: GetPresignedUrlParams,) => {
+export const getGetPresignedUploadUrlQueryKey = (params: GetPresignedUploadUrlParams,) => {
     return [`/uploads/presigned-url`, ...(params ? [params]: [])] as const;
     }
 
     
-export const getGetPresignedUrlQueryOptions = <TData = Awaited<ReturnType<typeof getPresignedUrl>>, TError = AxiosError<unknown>>(params: GetPresignedUrlParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPresignedUrl>>, TError, TData>, axios?: AxiosRequestConfig}
+export const getGetPresignedUploadUrlQueryOptions = <TData = Awaited<ReturnType<typeof getPresignedUploadUrl>>, TError = AxiosError<unknown>>(params: GetPresignedUploadUrlParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPresignedUploadUrl>>, TError, TData>, axios?: AxiosRequestConfig}
 ) => {
 
 const {query: queryOptions, axios: axiosOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetPresignedUrlQueryKey(params);
+  const queryKey =  queryOptions?.queryKey ?? getGetPresignedUploadUrlQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getPresignedUrl>>> = ({ signal }) => getPresignedUrl(params, { signal, ...axiosOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getPresignedUploadUrl>>> = ({ signal }) => getPresignedUploadUrl(params, { signal, ...axiosOptions });
 
       
 
       
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getPresignedUrl>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getPresignedUploadUrl>>, TError, TData> & { queryKey: QueryKey }
 }
 
-export type GetPresignedUrlQueryResult = NonNullable<Awaited<ReturnType<typeof getPresignedUrl>>>
-export type GetPresignedUrlQueryError = AxiosError<unknown>
+export type GetPresignedUploadUrlQueryResult = NonNullable<Awaited<ReturnType<typeof getPresignedUploadUrl>>>
+export type GetPresignedUploadUrlQueryError = AxiosError<unknown>
 
 
 /**
  * @summary Get presigned url to upload file
  */
 
-export function useGetPresignedUrl<TData = Awaited<ReturnType<typeof getPresignedUrl>>, TError = AxiosError<unknown>>(
- params: GetPresignedUrlParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPresignedUrl>>, TError, TData>, axios?: AxiosRequestConfig}
+export function useGetPresignedUploadUrl<TData = Awaited<ReturnType<typeof getPresignedUploadUrl>>, TError = AxiosError<unknown>>(
+ params: GetPresignedUploadUrlParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPresignedUploadUrl>>, TError, TData>, axios?: AxiosRequestConfig}
 
   ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  const queryOptions = getGetPresignedUrlQueryOptions(params,options)
+  const queryOptions = getGetPresignedUploadUrlQueryOptions(params,options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 
@@ -157,6 +164,68 @@ export function useGetBulkFilesByIds<TData = Awaited<ReturnType<typeof getBulkFi
 
 
 /**
+ * Delete files on database and storage service by ids
+ * @summary Delete files by ids
+ */
+export const deleteBulkFilesByIds = (
+    params: DeleteBulkFilesByIdsParams, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<DeleteBulkFilesOutput>> => {
+    
+    
+    return axios.delete(
+      `/files/bulk`,{
+    ...options,
+        params: {...params, ...options?.params},}
+    );
+  }
+
+
+
+export const getDeleteBulkFilesByIdsMutationOptions = <TData = Awaited<ReturnType<typeof deleteBulkFilesByIds>>, TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{params: DeleteBulkFilesByIdsParams}, TContext>, axios?: AxiosRequestConfig}
+) => {
+const mutationKey = ['deleteBulkFilesByIds'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, axios: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteBulkFilesByIds>>, {params: DeleteBulkFilesByIdsParams}> = (props) => {
+          const {params} = props ?? {};
+
+          return  deleteBulkFilesByIds(params,axiosOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions } as UseMutationOptions<TData, TError,{params: DeleteBulkFilesByIdsParams}, TContext>}
+
+    export type DeleteBulkFilesByIdsMutationResult = NonNullable<Awaited<ReturnType<typeof deleteBulkFilesByIds>>>
+    
+    export type DeleteBulkFilesByIdsMutationError = AxiosError<unknown>
+
+    /**
+ * @summary Delete files by ids
+ */
+export const useDeleteBulkFilesByIds = <TData = Awaited<ReturnType<typeof deleteBulkFilesByIds>>, TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{params: DeleteBulkFilesByIdsParams}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationResult<
+        TData,
+        TError,
+        {params: DeleteBulkFilesByIdsParams},
+        TContext
+      > => {
+
+      const mutationOptions = getDeleteBulkFilesByIdsMutationOptions(options);
+
+      return useMutation(mutationOptions);
+    }
+    /**
  * Returns file by id with presigned url
  * @summary Get file by id with presigned url
  */
@@ -218,3 +287,64 @@ export function useGetFileById<TData = Awaited<ReturnType<typeof getFileById>>, 
 
 
 
+/**
+ * Delete file on database and storage service by id
+ * @summary Delete file by id
+ */
+export const deleteFileById = (
+    id: string, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<boolean>> => {
+    
+    
+    return axios.delete(
+      `/files/${id}`,options
+    );
+  }
+
+
+
+export const getDeleteFileByIdMutationOptions = <TData = Awaited<ReturnType<typeof deleteFileById>>, TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{id: string}, TContext>, axios?: AxiosRequestConfig}
+) => {
+const mutationKey = ['deleteFileById'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, axios: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteFileById>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteFileById(id,axiosOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions } as UseMutationOptions<TData, TError,{id: string}, TContext>}
+
+    export type DeleteFileByIdMutationResult = NonNullable<Awaited<ReturnType<typeof deleteFileById>>>
+    
+    export type DeleteFileByIdMutationError = AxiosError<unknown>
+
+    /**
+ * @summary Delete file by id
+ */
+export const useDeleteFileById = <TData = Awaited<ReturnType<typeof deleteFileById>>, TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{id: string}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationResult<
+        TData,
+        TError,
+        {id: string},
+        TContext
+      > => {
+
+      const mutationOptions = getDeleteFileByIdMutationOptions(options);
+
+      return useMutation(mutationOptions);
+    }
+    

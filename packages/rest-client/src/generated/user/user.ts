@@ -26,8 +26,9 @@ import type {
 } from 'axios'
 import type {
   CreateUserDto,
-  File,
+  GetUserFilesOutput,
   LoginDto,
+  MyFilesParams,
   RefreshTokenDto,
   User,
   UserLogin
@@ -285,31 +286,33 @@ export function useMe<TData = Awaited<ReturnType<typeof me>>, TError = AxiosErro
  * @summary Get the authenticated user files URLs
  */
 export const myFiles = (
-     options?: AxiosRequestConfig
- ): Promise<AxiosResponse<File[]>> => {
+    params: MyFilesParams, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<GetUserFilesOutput>> => {
     
     
     return axios.get(
-      `/users/me/files`,options
+      `/users/me/files`,{
+    ...options,
+        params: {...params, ...options?.params},}
     );
   }
 
 
-export const getMyFilesQueryKey = () => {
-    return [`/users/me/files`] as const;
+export const getMyFilesQueryKey = (params: MyFilesParams,) => {
+    return [`/users/me/files`, ...(params ? [params]: [])] as const;
     }
 
     
-export const getMyFilesQueryOptions = <TData = Awaited<ReturnType<typeof myFiles>>, TError = AxiosError<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof myFiles>>, TError, TData>, axios?: AxiosRequestConfig}
+export const getMyFilesQueryOptions = <TData = Awaited<ReturnType<typeof myFiles>>, TError = AxiosError<unknown>>(params: MyFilesParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof myFiles>>, TError, TData>, axios?: AxiosRequestConfig}
 ) => {
 
 const {query: queryOptions, axios: axiosOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getMyFilesQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getMyFilesQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof myFiles>>> = ({ signal }) => myFiles({ signal, ...axiosOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof myFiles>>> = ({ signal }) => myFiles(params, { signal, ...axiosOptions });
 
       
 
@@ -327,11 +330,11 @@ export type MyFilesQueryError = AxiosError<unknown>
  */
 
 export function useMyFiles<TData = Awaited<ReturnType<typeof myFiles>>, TError = AxiosError<unknown>>(
-  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof myFiles>>, TError, TData>, axios?: AxiosRequestConfig}
+ params: MyFilesParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof myFiles>>, TError, TData>, axios?: AxiosRequestConfig}
 
   ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  const queryOptions = getMyFilesQueryOptions(options)
+  const queryOptions = getMyFilesQueryOptions(params,options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 

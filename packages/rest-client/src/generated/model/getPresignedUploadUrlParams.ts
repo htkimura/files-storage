@@ -6,7 +6,7 @@
  * OpenAPI spec version: 1.0
  */
 
-export type GetPresignedUrlParams = {
+export type GetPresignedUploadUrlParams = {
 fileName: string;
 fileType: string;
 fileSize: number;

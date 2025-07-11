@@ -7,11 +7,16 @@
  */
 
 export * from './createUserDto';
+export * from './deleteBulkFilesByIdsParams';
+export * from './deleteBulkFilesOutput';
 export * from './file';
 export * from './fileWithPresignedUrl';
 export * from './getBulkFilesByIdsParams';
-export * from './getPresignedUrlParams';
+export * from './getPresignedUploadUrlParams';
+export * from './getUserFilesOutput';
 export * from './loginDto';
+export * from './myFilesParams';
 export * from './refreshTokenDto';
+export * from './uploadFileOutput';
 export * from './user';
 export * from './userLogin';
