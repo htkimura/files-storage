@@ -43,4 +43,10 @@ export class FileRepository {
       },
     });
   }
+
+  deleteById(fileId: string): Promise<File> {
+    return this.prismaService.file.delete({
+      where: { id: fileId },
+    });
+  }
 }
