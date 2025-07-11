@@ -1,5 +1,6 @@
 import { AuthUser } from '@common/decorators';
 import { AuthGuard } from '@common/guards';
+import { GetUserFilesOutput } from '@modules/files/models';
 import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
@@ -77,7 +78,7 @@ export class UserController {
   })
   @ApiResponse({
     status: 200,
-    type: [File],
+    type: GetUserFilesOutput,
   })
   myFiles(@AuthUser('_id') userId: string, @Query() pagination: MyFilesDto) {
     return this.userService.getUserFiles({ userId, ...pagination });
