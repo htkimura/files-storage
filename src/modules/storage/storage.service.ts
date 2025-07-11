@@ -9,8 +9,8 @@ import {
   GetBulkFilesByIdsUseCase,
   GetFileByIdArgs,
   GetFileByIdUseCase,
-  GetPresignedUploadFileArgs,
-  GetPresignedUploadFileUseCase,
+  GetPresignedUploadUrlArgs,
+  GetPresignedUploadUrlUseCase,
 } from './use-cases';
 
 @Injectable()
@@ -20,7 +20,7 @@ export class StorageService extends R2Service {
     private readonly deleteFileByIdUseCase: DeleteFileByIdUseCase,
     private readonly getBulkFilesByIdsUseCase: GetBulkFilesByIdsUseCase,
     private readonly getFileByIdUseCase: GetFileByIdUseCase,
-    private readonly getPresignedUploadFileUseCase: GetPresignedUploadFileUseCase,
+    private readonly getPresignedUploadUrlUseCase: GetPresignedUploadUrlUseCase,
   ) {
     super(fileService);
   }
@@ -37,7 +37,7 @@ export class StorageService extends R2Service {
     return this.getBulkFilesByIdsUseCase.execute(input);
   }
 
-  async getPresignedUploadUrl(input: GetPresignedUploadFileArgs) {
-    return this.getPresignedUploadFileUseCase.execute(input);
+  async getPresignedUploadUrl(input: GetPresignedUploadUrlArgs) {
+    return this.getPresignedUploadUrlUseCase.execute(input);
   }
 }

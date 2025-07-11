@@ -5,13 +5,13 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { R2Service } from '../r2.service';
 
-export interface GetPresignedUploadFileArgs {
+export interface GetPresignedUploadUrlArgs {
   userId: string;
   fileInput: { name: string; type: string; size: number };
 }
 
 @Injectable()
-export class GetPresignedUploadFileUseCase {
+export class GetPresignedUploadUrlUseCase {
   constructor(
     private readonly userService: UserService,
     private readonly fileService: FileService,
@@ -21,7 +21,7 @@ export class GetPresignedUploadFileUseCase {
   async execute({
     userId,
     fileInput,
-  }: GetPresignedUploadFileArgs): Promise<UploadFileOutput> {
+  }: GetPresignedUploadUrlArgs): Promise<UploadFileOutput> {
     const foundUser = await this.userService.getUserById({ userId });
 
     if (!foundUser) throw new NotFoundException('User not found');

@@ -9,14 +9,14 @@ import {
   DeleteFileByIdUseCase,
   GetBulkFilesByIdsUseCase,
   GetFileByIdUseCase,
-  GetPresignedUploadFileUseCase,
+  GetPresignedUploadUrlUseCase,
 } from './use-cases';
 
 const useCases = [
   DeleteFileByIdUseCase,
   GetBulkFilesByIdsUseCase,
   GetFileByIdUseCase,
-  GetPresignedUploadFileUseCase,
+  GetPresignedUploadUrlUseCase,
 ];
 
 @Module({
