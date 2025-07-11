@@ -6,7 +6,7 @@
  * OpenAPI spec version: 1.0
  */
 
-export type StorageControllerGetPresignedUrlParams = {
+export type GetPresignedUrlParams = {
 fileName: string;
 fileType: string;
 fileSize: number;

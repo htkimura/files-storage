@@ -7,8 +7,11 @@
  */
 
 export * from './createUserDto';
+export * from './file';
+export * from './fileWithPresignedUrl';
+export * from './getBulkFilesByIdsParams';
+export * from './getPresignedUrlParams';
 export * from './loginDto';
 export * from './refreshTokenDto';
-export * from './storageControllerGetPresignedUrlParams';
 export * from './user';
 export * from './userLogin';

@@ -21,14 +21,20 @@ import type {
   AxiosResponse
 } from 'axios'
 import type {
-  StorageControllerGetPresignedUrlParams
+  FileWithPresignedUrl,
+  GetBulkFilesByIdsParams,
+  GetPresignedUrlParams
 } from '.././model'
 
 
 
-export const storageControllerGetPresignedUrl = (
-    params: StorageControllerGetPresignedUrlParams, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<void>> => {
+/**
+ * Returns presigned url to upload file
+ * @summary Get presigned url to upload file
+ */
+export const getPresignedUrl = (
+    params: GetPresignedUrlParams, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<string>> => {
     
     
     return axios.get(
@@ -39,40 +45,169 @@ export const storageControllerGetPresignedUrl = (
   }
 
 
-export const getStorageControllerGetPresignedUrlQueryKey = (params: StorageControllerGetPresignedUrlParams,) => {
+export const getGetPresignedUrlQueryKey = (params: GetPresignedUrlParams,) => {
     return [`/uploads/presigned-url`, ...(params ? [params]: [])] as const;
     }
 
     
-export const getStorageControllerGetPresignedUrlQueryOptions = <TData = Awaited<ReturnType<typeof storageControllerGetPresignedUrl>>, TError = AxiosError<unknown>>(params: StorageControllerGetPresignedUrlParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof storageControllerGetPresignedUrl>>, TError, TData>, axios?: AxiosRequestConfig}
+export const getGetPresignedUrlQueryOptions = <TData = Awaited<ReturnType<typeof getPresignedUrl>>, TError = AxiosError<unknown>>(params: GetPresignedUrlParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPresignedUrl>>, TError, TData>, axios?: AxiosRequestConfig}
 ) => {
 
 const {query: queryOptions, axios: axiosOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getStorageControllerGetPresignedUrlQueryKey(params);
+  const queryKey =  queryOptions?.queryKey ?? getGetPresignedUrlQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof storageControllerGetPresignedUrl>>> = ({ signal }) => storageControllerGetPresignedUrl(params, { signal, ...axiosOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getPresignedUrl>>> = ({ signal }) => getPresignedUrl(params, { signal, ...axiosOptions });
 
       
 
       
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof storageControllerGetPresignedUrl>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getPresignedUrl>>, TError, TData> & { queryKey: QueryKey }
 }
 
-export type StorageControllerGetPresignedUrlQueryResult = NonNullable<Awaited<ReturnType<typeof storageControllerGetPresignedUrl>>>
-export type StorageControllerGetPresignedUrlQueryError = AxiosError<unknown>
+export type GetPresignedUrlQueryResult = NonNullable<Awaited<ReturnType<typeof getPresignedUrl>>>
+export type GetPresignedUrlQueryError = AxiosError<unknown>
 
 
+/**
+ * @summary Get presigned url to upload file
+ */
 
-export function useStorageControllerGetPresignedUrl<TData = Awaited<ReturnType<typeof storageControllerGetPresignedUrl>>, TError = AxiosError<unknown>>(
- params: StorageControllerGetPresignedUrlParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof storageControllerGetPresignedUrl>>, TError, TData>, axios?: AxiosRequestConfig}
+export function useGetPresignedUrl<TData = Awaited<ReturnType<typeof getPresignedUrl>>, TError = AxiosError<unknown>>(
+ params: GetPresignedUrlParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPresignedUrl>>, TError, TData>, axios?: AxiosRequestConfig}
 
   ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  const queryOptions = getStorageControllerGetPresignedUrlQueryOptions(params,options)
+  const queryOptions = getGetPresignedUrlQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+/**
+ * Returns the authenticated user files by ids with presigned urls
+ * @summary Get the authenticated user files by ids with presigned urls
+ */
+export const getBulkFilesByIds = (
+    params: GetBulkFilesByIdsParams, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<FileWithPresignedUrl[]>> => {
+    
+    
+    return axios.get(
+      `/files/bulk`,{
+    ...options,
+        params: {...params, ...options?.params},}
+    );
+  }
+
+
+export const getGetBulkFilesByIdsQueryKey = (params: GetBulkFilesByIdsParams,) => {
+    return [`/files/bulk`, ...(params ? [params]: [])] as const;
+    }
+
+    
+export const getGetBulkFilesByIdsQueryOptions = <TData = Awaited<ReturnType<typeof getBulkFilesByIds>>, TError = AxiosError<unknown>>(params: GetBulkFilesByIdsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getBulkFilesByIds>>, TError, TData>, axios?: AxiosRequestConfig}
+) => {
+
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetBulkFilesByIdsQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getBulkFilesByIds>>> = ({ signal }) => getBulkFilesByIds(params, { signal, ...axiosOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getBulkFilesByIds>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetBulkFilesByIdsQueryResult = NonNullable<Awaited<ReturnType<typeof getBulkFilesByIds>>>
+export type GetBulkFilesByIdsQueryError = AxiosError<unknown>
+
+
+/**
+ * @summary Get the authenticated user files by ids with presigned urls
+ */
+
+export function useGetBulkFilesByIds<TData = Awaited<ReturnType<typeof getBulkFilesByIds>>, TError = AxiosError<unknown>>(
+ params: GetBulkFilesByIdsParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getBulkFilesByIds>>, TError, TData>, axios?: AxiosRequestConfig}
+
+  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetBulkFilesByIdsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+/**
+ * Returns file by id with presigned url
+ * @summary Get file by id with presigned url
+ */
+export const getFileById = (
+    id: string, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<FileWithPresignedUrl>> => {
+    
+    
+    return axios.get(
+      `/files/${id}`,options
+    );
+  }
+
+
+export const getGetFileByIdQueryKey = (id: string,) => {
+    return [`/files/${id}`] as const;
+    }
+
+    
+export const getGetFileByIdQueryOptions = <TData = Awaited<ReturnType<typeof getFileById>>, TError = AxiosError<unknown>>(id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getFileById>>, TError, TData>, axios?: AxiosRequestConfig}
+) => {
+
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetFileByIdQueryKey(id);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getFileById>>> = ({ signal }) => getFileById(id, { signal, ...axiosOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getFileById>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetFileByIdQueryResult = NonNullable<Awaited<ReturnType<typeof getFileById>>>
+export type GetFileByIdQueryError = AxiosError<unknown>
+
+
+/**
+ * @summary Get file by id with presigned url
+ */
+
+export function useGetFileById<TData = Awaited<ReturnType<typeof getFileById>>, TError = AxiosError<unknown>>(
+ id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getFileById>>, TError, TData>, axios?: AxiosRequestConfig}
+
+  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetFileByIdQueryOptions(id,options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 

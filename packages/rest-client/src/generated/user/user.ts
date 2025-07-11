@@ -26,6 +26,7 @@ import type {
 } from 'axios'
 import type {
   CreateUserDto,
+  File,
   LoginDto,
   RefreshTokenDto,
   User,
@@ -285,7 +286,7 @@ export function useMe<TData = Awaited<ReturnType<typeof me>>, TError = AxiosErro
  */
 export const myFiles = (
      options?: AxiosRequestConfig
- ): Promise<AxiosResponse<string[]>> => {
+ ): Promise<AxiosResponse<File[]>> => {
     
     
     return axios.get(

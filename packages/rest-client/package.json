@@ -1,6 +1,6 @@
 {
 	"name": "@htkimura/files-storage-backend.rest-client",
-	"version": "0.0.21",
+	"version": "0.0.23",
 	"description": "REST client of files-storage-backend",
 	"author": "Henry Kimura",
 	"license": "MIT",
@@ -17,7 +17,7 @@
 	],
 	"scripts": {
 		"buildPackage": "tsc -p tsconfig.build.json",
-		"publish": "yarn buildPackage && npm publish --access public"
+		"publishPackage": "yarn buildPackage && npm publish --access public"
 	},
 	"peerDependencies": {
 		"@tanstack/react-query": "^5.66.0",
