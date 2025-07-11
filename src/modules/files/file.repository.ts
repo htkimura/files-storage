@@ -7,10 +7,15 @@ import { File } from './file.model';
 export class FileRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  getManyByUserId(userId: string): Promise<File[]> {
+  getManyByUserId(userId: string, skip: number, take: number): Promise<File[]> {
     return this.prismaService.file.findMany({
       where: {
         userId,
+      },
+      skip,
+      take,
+      orderBy: {
+        createdAt: 'desc',
       },
     });
   }

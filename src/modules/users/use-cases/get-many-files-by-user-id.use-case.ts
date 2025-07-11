@@ -6,6 +6,8 @@ import { UserRepository } from '../user.repository';
 
 export interface GetUserFilesArgs {
   userId: string;
+  page: number;
+  size: number;
 }
 
 @Injectable()
@@ -15,11 +17,11 @@ export class GetManyFilesByUserIdUseCase {
     private readonly fileRepository: FileRepository,
   ) {}
 
-  async execute({ userId }: GetUserFilesArgs): Promise<File[]> {
+  async execute({ userId, page, size }: GetUserFilesArgs): Promise<File[]> {
     const foundUser = await this.userRepository.getById(userId);
 
     if (!foundUser) throw new NotFoundException('User not found');
 
-    return this.fileRepository.getManyByUserId(userId);
+    return this.fileRepository.getManyByUserId(userId, (page - 1) * size, size);
   }
 }

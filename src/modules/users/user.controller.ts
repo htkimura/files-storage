@@ -1,7 +1,7 @@
 import { AuthUser } from '@common/decorators';
 import { AuthGuard } from '@common/guards';
 import { File } from '@modules/files';
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 import { CreateUserDto, LoginDto, RefreshTokenDto } from './dto';
@@ -80,7 +80,11 @@ export class UserController {
     status: 200,
     type: [File],
   })
-  myFiles(@AuthUser('_id') userId: string) {
-    return this.userService.getUserFiles({ userId });
+  myFiles(
+    @AuthUser('_id') userId: string,
+    @Query('page') page = 1,
+    @Query('limit') size = 20,
+  ) {
+    return this.userService.getUserFiles({ userId, page, size });
   }
 }

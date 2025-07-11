@@ -6,6 +6,7 @@ import {
   GetManyFilesByUserIdUseCase,
   GetUserByIdArgs,
   GetUserByIdUseCase,
+  GetUserFilesArgs,
   LoginUseCase,
   RefreshTokenUseCase,
 } from './use-cases';
@@ -36,7 +37,7 @@ export class UserService {
     return this.getUserByIdUseCase.execute(input);
   }
 
-  getUserFiles(input: GetUserByIdArgs) {
+  getUserFiles(input: GetUserFilesArgs) {
     return this.getManyFilesByUserIdUseCase.execute(input);
   }
 }
