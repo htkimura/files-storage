@@ -3,7 +3,14 @@ import { AuthGuard } from '@common/guards';
 import { JUser } from '@common/types';
 import { FileWithPresignedUrl } from '@modules/files';
 import { UploadFileOutput } from '@modules/files/models';
-import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 import { StorageService } from './storage.service';
@@ -66,5 +73,20 @@ export class StorageController {
   })
   getFileById(@Param('id') id: string, @AuthUser() user: JUser) {
     return this.storageService.getFileById({ fileId: id, userId: user._id });
+  }
+
+  @Delete('files/:id')
+  @UseGuards(AuthGuard)
+  @ApiOperation({
+    operationId: 'deleteFileById',
+    summary: 'Delete file by id',
+    description: 'Delete file on database and storage service by id',
+  })
+  @ApiResponse({
+    status: 200,
+    type: Boolean,
+  })
+  deleteFileById(@Param('id') id: string, @AuthUser() user: JUser) {
+    return this.storageService.deleteFileById({ fileId: id, userId: user._id });
   }
 }
