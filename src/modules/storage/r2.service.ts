@@ -51,7 +51,8 @@ export class R2Service {
     file: { name: string; type: string; size: number },
   ) {
     const now = new Date();
-    const key = `uploads/${userId}/${now.getUTCFullYear()}/${now.getUTCMonth() + 1}/originals/${uuid()}-${file.name}`;
+    const id = uuid();
+    const key = `uploads/${userId}/${now.getUTCFullYear()}/${now.getUTCMonth() + 1}/originals/${id}-${file.name}`;
 
     const command = new PutObjectCommand({
       Bucket: R2_BUCKET_NAME,
@@ -67,13 +68,7 @@ export class R2Service {
       },
     );
 
-    const uploadedFile = await this.fileService.create({
-      ...file,
-      userId,
-      path: key,
-    });
-
-    return { presignedUploadUrl, file: uploadedFile };
+    return { presignedUploadUrl, key, id };
   }
 
   async generateReadPresignedUrl(filePath: string) {
