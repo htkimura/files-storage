@@ -7,7 +7,7 @@ import { R2Service } from '../r2.service';
 
 export interface GetPresignedUploadFileArgs {
   userId: string;
-  rawFileInput: { name: string; type: string; size: number };
+  fileInput: { name: string; type: string; size: number };
 }
 
 @Injectable()
@@ -20,17 +20,17 @@ export class GetPresignedUploadFileUseCase {
 
   async execute({
     userId,
-    rawFileInput,
+    fileInput,
   }: GetPresignedUploadFileArgs): Promise<UploadFileOutput> {
     const foundUser = await this.userService.getUserById({ userId });
 
     if (!foundUser) throw new NotFoundException('User not found');
 
     const { id, key, presignedUploadUrl } =
-      await this.r2Service.createPresignedUpload(userId, rawFileInput);
+      await this.r2Service.createPresignedUpload(userId, fileInput);
 
     const uploadedFile = await this.fileService.create({
-      ...rawFileInput,
+      ...fileInput,
       userId,
       path: key,
       id,

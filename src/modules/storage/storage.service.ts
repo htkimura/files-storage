@@ -9,6 +9,8 @@ import {
   GetBulkFilesByIdsUseCase,
   GetFileByIdArgs,
   GetFileByIdUseCase,
+  GetPresignedUploadFileArgs,
+  GetPresignedUploadFileUseCase,
 } from './use-cases';
 
 @Injectable()
@@ -18,19 +20,24 @@ export class StorageService extends R2Service {
     private readonly deleteFileByIdUseCase: DeleteFileByIdUseCase,
     private readonly getBulkFilesByIdsUseCase: GetBulkFilesByIdsUseCase,
     private readonly getFileByIdUseCase: GetFileByIdUseCase,
+    private readonly getPresignedUploadFileUseCase: GetPresignedUploadFileUseCase,
   ) {
     super(fileService);
   }
 
-  async deleteFileById({ fileId, userId }: DeleteFileByIdArgs) {
-    return this.deleteFileByIdUseCase.execute({ fileId, userId });
+  async deleteFileById(input: DeleteFileByIdArgs) {
+    return this.deleteFileByIdUseCase.execute(input);
   }
 
-  async getFileById({ fileId, userId }: GetFileByIdArgs) {
-    return this.getFileByIdUseCase.execute({ fileId, userId });
+  async getFileById(input: GetFileByIdArgs) {
+    return this.getFileByIdUseCase.execute(input);
   }
 
-  async getBulkFilesByIds({ ids, userId }: GetBulkFilesByIdsArgs) {
-    return this.getBulkFilesByIdsUseCase.execute({ ids, userId });
+  async getBulkFilesByIds(input: GetBulkFilesByIdsArgs) {
+    return this.getBulkFilesByIdsUseCase.execute(input);
+  }
+
+  async getPresignedUploadUrl(input: GetPresignedUploadFileArgs) {
+    return this.getPresignedUploadFileUseCase.execute(input);
   }
 }

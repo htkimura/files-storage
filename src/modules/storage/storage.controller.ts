@@ -37,10 +37,13 @@ export class StorageController {
     size: number,
     @AuthUser() user: JUser,
   ) {
-    return this.storageService.createPresignedUpload(user._id, {
-      name,
-      type,
-      size,
+    return this.storageService.getPresignedUploadUrl({
+      userId: user._id,
+      fileInput: {
+        name,
+        type,
+        size,
+      },
     });
   }
 
