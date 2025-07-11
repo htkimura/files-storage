@@ -5,9 +5,10 @@
  * This API is for storing files for different users
  * OpenAPI spec version: 1.0
  */
+import type { File } from './file';
 
 export interface GetUserFilesOutput {
-  data: string[];
+  data: File[];
   page: number;
   size: number;
   total: number;

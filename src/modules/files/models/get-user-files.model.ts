@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { File } from '../file.model';
 
 export class GetUserFilesOutput {
-  @ApiProperty()
+  @ApiProperty({ type: [File] })
   data: File[];
 
   @ApiProperty()
