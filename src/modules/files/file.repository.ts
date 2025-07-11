@@ -53,4 +53,10 @@ export class FileRepository {
       where: { id: fileId },
     });
   }
+
+  deleteBulkByPaths(paths: string[]) {
+    return this.prismaService.file.deleteMany({
+      where: { path: { in: paths } },
+    });
+  }
 }
