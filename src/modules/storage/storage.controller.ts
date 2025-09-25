@@ -1,23 +1,33 @@
 import { AuthUser } from '@common/decorators';
+import { BullMQJob, BullMQQueue } from '@common/enums';
 import { AuthGuard } from '@common/guards';
 import { JUser } from '@common/types';
 import { FileWithPresignedUrl } from '@modules/files';
 import { DeleteBulkFilesOutput, UploadFileOutput } from '@modules/files/models';
+import { InjectQueue } from '@nestjs/bullmq';
 import {
+  Body,
   Controller,
   Delete,
   Get,
   Param,
+  Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Queue } from 'bullmq';
 
 import { StorageService } from './storage.service';
 
 @Controller()
 export class StorageController {
-  constructor(private readonly storageService: StorageService) {}
+  constructor(
+    private readonly storageService: StorageService,
+
+    @InjectQueue(BullMQQueue.THUMBNAIL_QUEUE)
+    private readonly thumbnailQueue: Queue,
+  ) {}
 
   @Get('uploads/presigned-url')
   @UseGuards(AuthGuard)
@@ -45,6 +55,30 @@ export class StorageController {
         size,
       },
     });
+  }
+
+  @Post('uploads/image-uploaded')
+  @UseGuards(AuthGuard)
+  @ApiOperation({
+    operationId: 'imageUploaded',
+    summary: 'Confirms the image upload',
+    description:
+      'Confirms the file upload, adding the file to the thumbnail queue',
+  })
+  @ApiResponse({
+    status: 200,
+    type: Boolean,
+  })
+  async imageUploaded(
+    @Body() { fileId }: { fileId: string },
+    @AuthUser() user: JUser,
+  ) {
+    await this.thumbnailQueue.add(BullMQJob.IMAGE_THUMBNAIL_JOB, {
+      fileId,
+      userId: user._id,
+    });
+
+    return true;
   }
 
   @Get('files/bulk')
