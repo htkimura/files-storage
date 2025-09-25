@@ -72,6 +72,26 @@ export class R2Service {
     return { presignedUploadUrl, key, id };
   }
 
+  putObject(key: string, body: Buffer, contentType: string) {
+    const command = new PutObjectCommand({
+      Bucket: R2_BUCKET_NAME,
+      Key: key,
+      Body: body,
+      ContentType: contentType,
+    });
+
+    return this.s3Client.send(command);
+  }
+
+  getObject(filePath: string) {
+    return this.s3Client.send(
+      new GetObjectCommand({
+        Bucket: R2_BUCKET_NAME,
+        Key: filePath,
+      }),
+    );
+  }
+
   async generateReadPresignedUrl(filePath: string) {
     const command = new GetObjectCommand({
       Bucket: R2_BUCKET_NAME,
