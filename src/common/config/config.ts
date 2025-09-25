@@ -14,4 +14,5 @@ export const {
   AUTH_JWT_REFRESH_SECRET = '***',
   AUTH_HEADER = 'authorization',
   AUTH_EXPIRES_IN = '14d',
+  REDIS_URL = '***',
 } = process.env;
