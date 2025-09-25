@@ -3,6 +3,8 @@ import { Injectable } from '@nestjs/common';
 
 import { R2Service } from './r2.service';
 import {
+  CreateImageThumbnailArgs,
+  CreateImageThumbnailUseCase,
   DeleteBulkFilesByIdsArgs,
   DeleteBulkFilesByIdsUseCase,
   DeleteFileByIdArgs,
@@ -24,6 +26,7 @@ export class StorageService extends R2Service {
     private readonly getBulkFilesByIdsUseCase: GetBulkFilesByIdsUseCase,
     private readonly getFileByIdUseCase: GetFileByIdUseCase,
     private readonly getPresignedUploadUrlUseCase: GetPresignedUploadUrlUseCase,
+    private readonly createImageThumbnailUseCase: CreateImageThumbnailUseCase,
   ) {
     super(fileService);
   }
@@ -46,5 +49,9 @@ export class StorageService extends R2Service {
 
   async getPresignedUploadUrl(input: GetPresignedUploadUrlArgs) {
     return this.getPresignedUploadUrlUseCase.execute(input);
+  }
+
+  async createImageThumbnail(input: CreateImageThumbnailArgs) {
+    return this.createImageThumbnailUseCase.execute(input);
   }
 }
