@@ -1,5 +1,5 @@
 import { Entity } from '@common/models';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class File extends Entity {
   @ApiProperty()
@@ -13,6 +13,9 @@ export class File extends Entity {
 
   @ApiProperty()
   path: string;
+
+  @ApiPropertyOptional()
+  thumbnailPath?: string;
 
   @ApiProperty()
   userId: string;

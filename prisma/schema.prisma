@@ -23,6 +23,7 @@ model File {
   type String
   size Int
   path String
+  thumbnailPath String? @map("thumbnail_path")
   userId String @map("user_id")
   user User @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now()) @map("created_at")
