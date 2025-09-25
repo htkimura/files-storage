@@ -3,9 +3,13 @@ import { Injectable } from '@nestjs/common';
 
 import { File } from './file.model';
 
-interface CreateFileInput extends Omit<File, 'id' | 'createdAt' | 'updatedAt'> {
+interface CreateFileInput
+  extends Omit<File, 'id' | 'createdAt' | 'updatedAt' | 'thumbnailPath'> {
   id?: string;
 }
+
+interface UpdateFileInput
+  extends Partial<Omit<File, 'id' | 'createdAt' | 'updatedAt'>> {}
 
 @Injectable()
 export class FileRepository {
@@ -53,6 +57,18 @@ export class FileRepository {
         createdAt: now,
         updatedAt: now,
       },
+    });
+  }
+
+  update(id: string, data: UpdateFileInput): Promise<File> {
+    const now = new Date();
+
+    return this.prismaService.file.update({
+      data: {
+        ...data,
+        updatedAt: now,
+      },
+      where: { id },
     });
   }
 
