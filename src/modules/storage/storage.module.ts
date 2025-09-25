@@ -2,6 +2,7 @@ import { FileModule } from '@modules/files';
 import { UserModule } from '@modules/users';
 import { forwardRef, Module } from '@nestjs/common';
 
+import { ThumbnailJobHandler } from './job-handlers';
 import { R2Service } from './r2.service';
 import { StorageController } from './storage.controller';
 import { StorageService } from './storage.service';
@@ -27,6 +28,6 @@ const useCases = [
   imports: [FileModule, forwardRef(() => UserModule)],
   controllers: [StorageController],
   exports: [StorageService],
-  providers: [StorageService, R2Service, ...useCases],
+  providers: [StorageService, R2Service, ThumbnailJobHandler, ...useCases],
 })
 export class StorageModule {}
