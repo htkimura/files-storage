@@ -46,7 +46,12 @@ export class DeleteBulkFilesByIdsUseCase {
       return { deleted: [], failed: failedFilesIds };
     }
 
-    await this.fileService.deleteBulkByPaths(deletedKeys);
+    await Promise.all([
+      this.fileService.deleteBulkByPaths(deletedKeys),
+      this.r2Service.deleteBulkFiles(
+        deletableFiles.map((file) => file.thumbnailPath).filter(Boolean),
+      ),
+    ]);
 
     const deleteFilesIds = deletedKeys?.map((key) => filesByPath[key].id) || [];
 

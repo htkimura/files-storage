@@ -30,6 +30,10 @@ export class DeleteFileByIdUseCase {
 
     await this.fileService.deleteById(fileId);
 
+    if (!file.thumbnailPath) return true;
+
+    await this.r2Service.deleteFile(file.thumbnailPath);
+
     return true;
   }
 }
