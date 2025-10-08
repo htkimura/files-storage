@@ -100,6 +100,66 @@ export function useGetPresignedUploadUrl<TData = Awaited<ReturnType<typeof getPr
 
 
 /**
+ * Confirms the file upload, adding the file to the thumbnail queue
+ * @summary Confirms the image upload
+ */
+export const imageUploaded = (
+     options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<boolean>> => {
+    
+    
+    return axios.post(
+      `/uploads/image-uploaded`,undefined,options
+    );
+  }
+
+
+
+export const getImageUploadedMutationOptions = <TData = Awaited<ReturnType<typeof imageUploaded>>, TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,void, TContext>, axios?: AxiosRequestConfig}
+) => {
+const mutationKey = ['imageUploaded'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, axios: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof imageUploaded>>, void> = () => {
+          
+
+          return  imageUploaded(axiosOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions } as UseMutationOptions<TData, TError,void, TContext>}
+
+    export type ImageUploadedMutationResult = NonNullable<Awaited<ReturnType<typeof imageUploaded>>>
+    
+    export type ImageUploadedMutationError = AxiosError<unknown>
+
+    /**
+ * @summary Confirms the image upload
+ */
+export const useImageUploaded = <TData = Awaited<ReturnType<typeof imageUploaded>>, TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,void, TContext>, axios?: AxiosRequestConfig}
+): UseMutationResult<
+        TData,
+        TError,
+        void,
+        TContext
+      > => {
+
+      const mutationOptions = getImageUploadedMutationOptions(options);
+
+      return useMutation(mutationOptions);
+    }
+    /**
  * Returns the authenticated user files by ids with presigned urls
  * @summary Get the authenticated user files by ids with presigned urls
  */

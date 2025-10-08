@@ -5,10 +5,5 @@
  * This API is for storing files for different users
  * OpenAPI spec version: 1.0
  */
-import type { FileFilters } from './fileFilters';
 
-export type MyFilesParams = {
-page?: number;
-size?: number;
-filters?: FileFilters;
-};
+export interface FileFilters { [key: string]: unknown }

@@ -14,5 +14,6 @@ export interface File {
   type: string;
   size: number;
   path: string;
+  thumbnailPath?: string;
   userId: string;
 }

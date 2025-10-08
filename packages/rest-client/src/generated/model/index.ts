@@ -10,6 +10,7 @@ export * from './createUserDto';
 export * from './deleteBulkFilesByIdsParams';
 export * from './deleteBulkFilesOutput';
 export * from './file';
+export * from './fileFilters';
 export * from './fileWithPresignedUrl';
 export * from './getBulkFilesByIdsParams';
 export * from './getPresignedUploadUrlParams';
