@@ -1,3 +1,4 @@
+import { Obj } from '@common/types';
 import { PrismaService } from '@modules/prisma';
 import { Injectable } from '@nestjs/common';
 
@@ -11,14 +12,27 @@ interface CreateFileInput
 interface UpdateFileInput
   extends Partial<Omit<File, 'id' | 'createdAt' | 'updatedAt'>> {}
 
+interface GetManyByUserId {
+  userId: string;
+  skip: number;
+  take: number;
+  filters?: Obj;
+}
+
 @Injectable()
 export class FileRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  getManyByUserId(userId: string, skip: number, take: number): Promise<File[]> {
+  getManyByUserId({
+    userId,
+    skip,
+    take,
+    filters,
+  }: GetManyByUserId): Promise<File[]> {
     return this.prismaService.file.findMany({
       where: {
         userId,
+        ...filters,
       },
       skip,
       take,

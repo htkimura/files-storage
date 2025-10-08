@@ -80,7 +80,7 @@ export class UserController {
     status: 200,
     type: GetUserFilesOutput,
   })
-  myFiles(@AuthUser('_id') userId: string, @Query() pagination: MyFilesDto) {
-    return this.userService.getUserFiles({ userId, ...pagination });
+  myFiles(@AuthUser('_id') userId: string, @Query() input: MyFilesDto) {
+    return this.userService.getUserFiles({ userId, ...input });
   }
 }
