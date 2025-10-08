@@ -5,10 +5,10 @@
  * This API is for storing files for different users
  * OpenAPI spec version: 1.0
  */
-import type { File } from './file';
+import type { FileWithPresignedThumbnailUrl } from './fileWithPresignedThumbnailUrl';
 
 export interface GetUserFilesOutput {
-  data: File[];
+  data: FileWithPresignedThumbnailUrl[];
   page: number;
   size: number;
   total: number;
