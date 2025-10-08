@@ -1,17 +1,7 @@
 import { FileFilterType } from '@common/enums';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import {
-  IsInt,
-  IsObject,
-  IsOptional,
-  Max,
-  ValidateNested,
-} from 'class-validator';
-
-export class FileFilters {
-  type?: FileFilterType[];
-}
+import { Transform, Type } from 'class-transformer';
+import { IsEnum, IsInt, IsOptional, Max } from 'class-validator';
 
 export class MyFilesDto {
   @ApiProperty({ default: 1 })
@@ -27,10 +17,18 @@ export class MyFilesDto {
   @Max(20)
   size: number = 20;
 
-  @ApiPropertyOptional({ type: FileFilters })
+  @ApiPropertyOptional({
+    type: [FileFilterType],
+    enum: FileFilterType,
+    enumName: 'FileFilterType',
+  })
+  @Transform(({ value }) => {
+    if (typeof value === 'string') {
+      return [value];
+    }
+    return value;
+  })
   @IsOptional()
-  @IsObject()
-  @ValidateNested()
-  @Type(() => FileFilters)
-  filters?: FileFilters;
+  @IsEnum(FileFilterType, { each: true })
+  filterType?: FileFilterType[];
 }

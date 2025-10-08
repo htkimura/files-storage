@@ -27,7 +27,7 @@ const useCases = [
 @Module({
   imports: [FileModule, forwardRef(() => UserModule)],
   controllers: [StorageController],
-  exports: [StorageService],
+  exports: [StorageService, R2Service],
   providers: [StorageService, R2Service, ThumbnailJobHandler, ...useCases],
 })
 export class StorageModule {}

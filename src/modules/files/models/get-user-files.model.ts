@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { File } from '../file.model';
+import { FileWithPresignedThumbnailUrl } from '../file.model';
 
 export class GetUserFilesOutput {
-  @ApiProperty({ type: [File] })
-  data: File[];
+  @ApiProperty({ type: [FileWithPresignedThumbnailUrl] })
+  data: FileWithPresignedThumbnailUrl[];
 
   @ApiProperty()
   page: number;

@@ -25,3 +25,8 @@ export class FileWithPresignedUrl extends File {
   @ApiProperty()
   presignedUrl: string;
 }
+
+export class FileWithPresignedThumbnailUrl extends File {
+  @ApiProperty()
+  presignedThumbnailUrl?: string;
+}
