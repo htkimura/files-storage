@@ -18,6 +18,7 @@ import {
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Queue } from 'bullmq';
 
+import { ListChildrenDto } from './dto';
 import { StorageService } from './storage.service';
 
 @Controller()
@@ -140,5 +141,24 @@ export class StorageController {
   })
   deleteFileById(@Param('id') id: string, @AuthUser() user: JUser) {
     return this.storageService.deleteFileById({ fileId: id, userId: user._id });
+  }
+
+  @Get('children')
+  @UseGuards(AuthGuard)
+  @ApiOperation({
+    operationId: 'listChildren',
+    summary: 'Get content of a folder (also works for root folder)',
+    description:
+      'Returns content of a folder. If no folder is provided, list content of root folder',
+  })
+  @ApiResponse({
+    status: 200,
+    type: FileWithPresignedUrl,
+  })
+  listChildren(@AuthUser() user: JUser, @Query() input: ListChildrenDto) {
+    return this.storageService.listChildren({
+      userId: user._id,
+      ...input,
+    });
   }
 }
