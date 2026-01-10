@@ -6,16 +6,11 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface FileWithPresignedThumbnailUrl {
+export interface Folder {
   id: string;
   createdAt: string;
   updatedAt: string;
   name: string;
-  type: string;
-  size: number;
-  path: string;
-  thumbnailPath?: string;
   userId: string;
-  folderId?: string;
-  presignedThumbnailUrl: string;
+  parentFolderId?: string;
 }

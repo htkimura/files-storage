@@ -6,6 +6,7 @@
  * OpenAPI spec version: 1.0
  */
 
+export * from './createFolderDto';
 export * from './createUserDto';
 export * from './deleteBulkFilesByIdsParams';
 export * from './deleteBulkFilesOutput';
@@ -13,12 +14,15 @@ export * from './file';
 export * from './fileFilterType';
 export * from './fileWithPresignedThumbnailUrl';
 export * from './fileWithPresignedUrl';
+export * from './folder';
 export * from './getBulkFilesByIdsParams';
 export * from './getPresignedUploadUrlParams';
 export * from './getUserFilesOutput';
 export * from './loginDto';
 export * from './myFilesParams';
 export * from './refreshTokenDto';
+export * from './renameFolderDto';
+export * from './updateParentFolderDto';
 export * from './uploadFileOutput';
 export * from './user';
 export * from './userLogin';
