@@ -38,7 +38,6 @@ model File {
 model Folder {
   id String @id @default(uuid()) @map("_id") 
   name String
-  path String
   userId String @map("user_id")
   user User @relation(fields: [userId], references: [id])
   parentFolderId String? @map("parent_folder_id")

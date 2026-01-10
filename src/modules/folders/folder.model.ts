@@ -6,11 +6,8 @@ export class Folder extends Entity {
   name: string;
 
   @ApiProperty()
-  path: string;
-
-  @ApiProperty()
   userId: string;
 
   @ApiPropertyOptional()
-  folderId?: string;
+  parentFolderId?: string;
 }
