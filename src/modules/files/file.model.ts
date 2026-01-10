@@ -19,6 +19,9 @@ export class File extends Entity {
 
   @ApiProperty()
   userId: string;
+
+  @ApiPropertyOptional()
+  folderId?: string;
 }
 
 export class FileWithPresignedUrl extends File {
