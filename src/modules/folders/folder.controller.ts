@@ -1,10 +1,17 @@
 import { AuthUser } from '@common/decorators';
 import { AuthGuard } from '@common/guards';
 import { JUser } from '@common/types';
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
-import { CreateFolderDto } from './dto';
+import { CreateFolderDto, RenameFolderDto } from './dto';
 import { Folder } from './folder.model';
 import { FolderService } from './folder.service';
 
@@ -26,5 +33,28 @@ export class FolderController {
   })
   createFolder(@Body() input: CreateFolderDto, @AuthUser() user: JUser) {
     return this.folderService.createFolder({ userId: user._id, ...input });
+  }
+
+  @Patch(':id/rename')
+  @UseGuards(AuthGuard)
+  @ApiOperation({
+    operationId: 'renameFolder',
+    summary: 'Rename a folder',
+    description: 'Renames a folder belonging to the authenticated user',
+  })
+  @ApiResponse({
+    status: 200,
+    type: Folder,
+  })
+  renameFolder(
+    @Param('id') id: string,
+    @Body() input: RenameFolderDto,
+    @AuthUser() user: JUser,
+  ) {
+    return this.folderService.renameFolder({
+      userId: user._id,
+      folderId: id,
+      name: input.name,
+    });
   }
 }
