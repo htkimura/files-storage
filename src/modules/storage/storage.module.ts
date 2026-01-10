@@ -15,6 +15,7 @@ import {
   GetFileByIdUseCase,
   GetPresignedUploadUrlUseCase,
   ListChildrenUseCase,
+  MoveFileToFolderUseCase,
 } from './use-cases';
 
 const useCases = [
@@ -25,6 +26,7 @@ const useCases = [
   GetFileByIdUseCase,
   GetPresignedUploadUrlUseCase,
   ListChildrenUseCase,
+  MoveFileToFolderUseCase,
 ];
 
 @Module({

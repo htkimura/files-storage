@@ -17,6 +17,8 @@ import {
   GetPresignedUploadUrlUseCase,
   ListChildrenArgs,
   ListChildrenUseCase,
+  MoveFileToFolderArgs,
+  MoveFileToFolderUseCase,
 } from './use-cases';
 
 @Injectable()
@@ -30,6 +32,7 @@ export class StorageService extends R2Service {
     private readonly getPresignedUploadUrlUseCase: GetPresignedUploadUrlUseCase,
     private readonly createImageThumbnailUseCase: CreateImageThumbnailUseCase,
     private readonly listChildrenUseCase: ListChildrenUseCase,
+    private readonly moveFileToFolderUseCase: MoveFileToFolderUseCase,
   ) {
     super(fileService);
   }
@@ -60,5 +63,9 @@ export class StorageService extends R2Service {
 
   async listChildren(input: ListChildrenArgs) {
     return this.listChildrenUseCase.execute(input);
+  }
+
+  async moveFileToFolder(input: MoveFileToFolderArgs) {
+    return this.moveFileToFolderUseCase.execute(input);
   }
 }
