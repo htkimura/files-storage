@@ -44,7 +44,7 @@ export class FolderService extends FolderRepository {
 
   getUserFolders(args: {
     userId: string;
-    parentFolderId?: string;
+    parentFolderId?: string | null;
   }): Promise<Folder[]> {
     return this.getManyByUserId(args);
   }

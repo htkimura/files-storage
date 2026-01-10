@@ -37,12 +37,17 @@ export class ListChildrenUseCase {
     }
 
     const [folders, files, totalFiles] = await Promise.all([
-      this.folderService.getUserFolders({ userId, parentFolderId }),
+      this.folderService.getUserFolders({
+        userId,
+        parentFolderId,
+      }),
       this.fileService.getManyByUserId({
         userId,
         skip: (page - 1) * size,
         take: size,
-        filters: { folderId: parentFolderId },
+        filters: {
+          folderId: parentFolderId ? parentFolderId : { isSet: false },
+        },
       }),
       this.fileService.getCountByUserId(userId, parentFolderId),
     ]);

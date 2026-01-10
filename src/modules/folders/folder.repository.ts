@@ -17,7 +17,7 @@ interface UpdateFolderInput
 
 interface GetManyInput {
   userId: string;
-  parentFolderId?: string;
+  parentFolderId?: string | null;
 }
 
 @Injectable()
@@ -44,7 +44,11 @@ export class FolderRepository {
 
   getManyByUserId({ userId, parentFolderId }: GetManyInput): Promise<Folder[]> {
     return this.prismaService.folder.findMany({
-      where: { userId, parentFolderId },
+      where: {
+        userId,
+        parentFolderId:
+          parentFolderId === null ? { isSet: false } : parentFolderId,
+      },
     });
   }
 
