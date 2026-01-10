@@ -9,7 +9,11 @@ interface CreateFolderInput
 }
 
 interface UpdateFolderInput
-  extends Partial<Omit<Folder, 'id' | 'createdAt' | 'updatedAt'>> {}
+  extends Partial<
+    Omit<Folder, 'id' | 'createdAt' | 'updatedAt' | 'parentFolderId'>
+  > {
+  parentFolderId?: string | null;
+}
 
 @Injectable()
 export class FolderRepository {
