@@ -14,6 +14,7 @@ model User {
   refreshToken String? @map("refresh_token")
 
   files File[]
+  folders Folder[]
   @@map("users")
 }
 
@@ -26,8 +27,26 @@ model File {
   thumbnailPath String? @map("thumbnail_path")
   userId String @map("user_id")
   user User @relation(fields: [userId], references: [id])
+  folderId String? @map("folder_id")
+  folder Folder? @relation(fields: [folderId], references: [id])
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("files")
+}
+
+model Folder {
+  id String @id @default(uuid()) @map("_id") 
+  name String
+  path String
+  userId String @map("user_id")
+  user User @relation(fields: [userId], references: [id])
+  parentFolderId String? @map("parent_folder_id")
+  parentFolder Folder? @relation("FolderHierarchy", fields: [parentFolderId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  files File[]
+  childFolders Folder[]  @relation("FolderHierarchy")
+  @@map("folders")
 }
