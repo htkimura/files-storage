@@ -41,4 +41,11 @@ export class FolderService extends FolderRepository {
   deleteFolder(args: DeleteFolderArgs): Promise<boolean> {
     return this.deleteFolderUseCase.execute(args);
   }
+
+  getUserFolders(args: {
+    userId: string;
+    parentFolderId?: string;
+  }): Promise<Folder[]> {
+    return this.getManyByUserId(args);
+  }
 }
