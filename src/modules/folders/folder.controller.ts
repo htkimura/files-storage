@@ -7,11 +7,12 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
-import { CreateFolderDto, RenameFolderDto } from './dto';
+import { CreateFolderDto, RenameFolderDto, UpdateParentFolderDto } from './dto';
 import { Folder } from './folder.model';
 import { FolderService } from './folder.service';
 
@@ -55,6 +56,30 @@ export class FolderController {
       userId: user._id,
       folderId: id,
       name: input.name,
+    });
+  }
+
+  @Put(':id/parent')
+  @UseGuards(AuthGuard)
+  @ApiOperation({
+    operationId: 'updateParentFolder',
+    summary: 'Update folder parent',
+    description:
+      'Moves a folder to another folder or removes it from its parent folder. Set parentFolderId to null to remove from parent folder.',
+  })
+  @ApiResponse({
+    status: 200,
+    type: Folder,
+  })
+  updateParentFolder(
+    @Param('id') id: string,
+    @Body() input: UpdateParentFolderDto,
+    @AuthUser() user: JUser,
+  ) {
+    return this.folderService.updateParentFolder({
+      userId: user._id,
+      folderId: id,
+      parentFolderId: input.parentFolderId ?? null,
     });
   }
 }
