@@ -2,7 +2,7 @@ import { AuthUser } from '@common/decorators';
 import { BullMQJob, BullMQQueue } from '@common/enums';
 import { AuthGuard } from '@common/guards';
 import { JUser } from '@common/types';
-import { FileWithPresignedUrl } from '@modules/files';
+import { File, FileWithPresignedUrl } from '@modules/files';
 import { DeleteBulkFilesOutput, UploadFileOutput } from '@modules/files/models';
 import { InjectQueue } from '@nestjs/bullmq';
 import {
@@ -12,13 +12,14 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Queue } from 'bullmq';
 
-import { ListChildrenDto } from './dto';
+import { ListChildrenDto, MoveFileToFolderDto } from './dto';
 import { StorageService } from './storage.service';
 
 @Controller()
@@ -159,6 +160,30 @@ export class StorageController {
     return this.storageService.listChildren({
       userId: user._id,
       ...input,
+    });
+  }
+
+  @Put('files/:id/folder')
+  @UseGuards(AuthGuard)
+  @ApiOperation({
+    operationId: 'moveFileToFolder',
+    summary: 'Move file to folder',
+    description:
+      'Moves a file to a folder or removes it from its folder. Set folderId to null to remove from folder.',
+  })
+  @ApiResponse({
+    status: 200,
+    type: File,
+  })
+  moveFileToFolder(
+    @Param('id') id: string,
+    @Body() input: MoveFileToFolderDto,
+    @AuthUser() user: JUser,
+  ) {
+    return this.storageService.moveFileToFolder({
+      fileId: id,
+      userId: user._id,
+      folderId: input.folderId ?? null,
     });
   }
 }
