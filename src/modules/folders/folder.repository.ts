@@ -15,6 +15,11 @@ interface UpdateFolderInput
   parentFolderId?: string | null;
 }
 
+interface GetManyInput {
+  userId: string;
+  parentFolderId?: string;
+}
+
 @Injectable()
 export class FolderRepository {
   constructor(private readonly prismaService: PrismaService) {}
@@ -34,6 +39,12 @@ export class FolderRepository {
   getById(folderId: string): Promise<Folder> {
     return this.prismaService.folder.findUnique({
       where: { id: folderId },
+    });
+  }
+
+  getManyByUserId({ userId, parentFolderId }: GetManyInput): Promise<Folder[]> {
+    return this.prismaService.folder.findMany({
+      where: { userId, parentFolderId },
     });
   }
 
