@@ -4,6 +4,7 @@ import { JUser } from '@common/types';
 import {
   Body,
   Controller,
+  Delete,
   Param,
   Patch,
   Post,
@@ -81,5 +82,20 @@ export class FolderController {
       folderId: id,
       parentFolderId: input.parentFolderId ?? null,
     });
+  }
+
+  @Delete(':id')
+  @UseGuards(AuthGuard)
+  @ApiOperation({
+    operationId: 'deleteFolder',
+    summary: 'Delete a folder',
+    description: 'Deletes a folder belonging to the authenticated user',
+  })
+  @ApiResponse({
+    status: 200,
+    type: Boolean,
+  })
+  deleteFolder(@Param('id') id: string, @AuthUser() user: JUser) {
+    return this.folderService.deleteFolder({ userId: user._id, folderId: id });
   }
 }
