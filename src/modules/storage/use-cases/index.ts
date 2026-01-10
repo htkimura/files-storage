@@ -5,3 +5,4 @@ export * from './get-bulk-files-by-ids.use-case';
 export * from './get-file-by-id.use-case';
 export * from './get-presigned-upload-url.use-case';
 export * from './list-children.use-case';
+export * from './move-file-to-folder.use-case';
