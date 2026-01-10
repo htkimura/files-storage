@@ -27,9 +27,12 @@ import type {
 import type {
   DeleteBulkFilesByIdsParams,
   DeleteBulkFilesOutput,
+  File,
   FileWithPresignedUrl,
   GetBulkFilesByIdsParams,
   GetPresignedUploadUrlParams,
+  ListChildrenParams,
+  MoveFileToFolderDto,
   UploadFileOutput
 } from '.././model'
 
@@ -404,6 +407,132 @@ export const useDeleteFileById = <TData = Awaited<ReturnType<typeof deleteFileBy
       > => {
 
       const mutationOptions = getDeleteFileByIdMutationOptions(options);
+
+      return useMutation(mutationOptions);
+    }
+    /**
+ * Returns content of a folder. If no folder is provided, list content of root folder
+ * @summary Get content of a folder (also works for root folder)
+ */
+export const listChildren = (
+    params: ListChildrenParams, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<FileWithPresignedUrl>> => {
+    
+    
+    return axios.get(
+      `/children`,{
+    ...options,
+        params: {...params, ...options?.params},}
+    );
+  }
+
+
+export const getListChildrenQueryKey = (params: ListChildrenParams,) => {
+    return [`/children`, ...(params ? [params]: [])] as const;
+    }
+
+    
+export const getListChildrenQueryOptions = <TData = Awaited<ReturnType<typeof listChildren>>, TError = AxiosError<unknown>>(params: ListChildrenParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listChildren>>, TError, TData>, axios?: AxiosRequestConfig}
+) => {
+
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListChildrenQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listChildren>>> = ({ signal }) => listChildren(params, { signal, ...axiosOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listChildren>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListChildrenQueryResult = NonNullable<Awaited<ReturnType<typeof listChildren>>>
+export type ListChildrenQueryError = AxiosError<unknown>
+
+
+/**
+ * @summary Get content of a folder (also works for root folder)
+ */
+
+export function useListChildren<TData = Awaited<ReturnType<typeof listChildren>>, TError = AxiosError<unknown>>(
+ params: ListChildrenParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listChildren>>, TError, TData>, axios?: AxiosRequestConfig}
+
+  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListChildrenQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+/**
+ * Moves a file to a folder or removes it from its folder. Set folderId to null to remove from folder.
+ * @summary Move file to folder
+ */
+export const moveFileToFolder = (
+    id: string,
+    moveFileToFolderDto: MoveFileToFolderDto, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<File>> => {
+    
+    
+    return axios.put(
+      `/files/${id}/folder`,
+      moveFileToFolderDto,options
+    );
+  }
+
+
+
+export const getMoveFileToFolderMutationOptions = <TData = Awaited<ReturnType<typeof moveFileToFolder>>, TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{id: string;data: MoveFileToFolderDto}, TContext>, axios?: AxiosRequestConfig}
+) => {
+const mutationKey = ['moveFileToFolder'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, axios: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof moveFileToFolder>>, {id: string;data: MoveFileToFolderDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  moveFileToFolder(id,data,axiosOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions } as UseMutationOptions<TData, TError,{id: string;data: MoveFileToFolderDto}, TContext>}
+
+    export type MoveFileToFolderMutationResult = NonNullable<Awaited<ReturnType<typeof moveFileToFolder>>>
+    export type MoveFileToFolderMutationBody = MoveFileToFolderDto
+    export type MoveFileToFolderMutationError = AxiosError<unknown>
+
+    /**
+ * @summary Move file to folder
+ */
+export const useMoveFileToFolder = <TData = Awaited<ReturnType<typeof moveFileToFolder>>, TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{id: string;data: MoveFileToFolderDto}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationResult<
+        TData,
+        TError,
+        {id: string;data: MoveFileToFolderDto},
+        TContext
+      > => {
+
+      const mutationOptions = getMoveFileToFolderMutationOptions(options);
 
       return useMutation(mutationOptions);
     }

@@ -8,9 +8,9 @@
 import type { FileWithPresignedThumbnailUrl } from './fileWithPresignedThumbnailUrl';
 
 export interface GetUserFilesOutput {
-  data: FileWithPresignedThumbnailUrl[];
   page: number;
   size: number;
   total: number;
   hasMore: boolean;
+  data: FileWithPresignedThumbnailUrl[];
 }
