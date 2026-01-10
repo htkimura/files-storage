@@ -15,6 +15,8 @@ import {
   GetFileByIdUseCase,
   GetPresignedUploadUrlArgs,
   GetPresignedUploadUrlUseCase,
+  ListChildrenArgs,
+  ListChildrenUseCase,
 } from './use-cases';
 
 @Injectable()
@@ -27,6 +29,7 @@ export class StorageService extends R2Service {
     private readonly getFileByIdUseCase: GetFileByIdUseCase,
     private readonly getPresignedUploadUrlUseCase: GetPresignedUploadUrlUseCase,
     private readonly createImageThumbnailUseCase: CreateImageThumbnailUseCase,
+    private readonly listChildrenUseCase: ListChildrenUseCase,
   ) {
     super(fileService);
   }
@@ -53,5 +56,9 @@ export class StorageService extends R2Service {
 
   async createImageThumbnail(input: CreateImageThumbnailArgs) {
     return this.createImageThumbnailUseCase.execute(input);
+  }
+
+  async listChildren(input: ListChildrenArgs) {
+    return this.listChildrenUseCase.execute(input);
   }
 }
