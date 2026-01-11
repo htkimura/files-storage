@@ -1,5 +1,5 @@
 import { PaginationOutput } from '@common/models';
-import { File } from '@modules/files';
+import { FileWithPresignedThumbnailUrl } from '@modules/files';
 import { Folder } from '@modules/folders';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
@@ -9,9 +9,9 @@ export class ListChildrenData {
   @Type(() => Folder)
   folders: Folder[];
 
-  @ApiProperty({ type: [File] })
-  @Type(() => File)
-  files: File[];
+  @ApiProperty({ type: [FileWithPresignedThumbnailUrl] })
+  @Type(() => FileWithPresignedThumbnailUrl)
+  files: FileWithPresignedThumbnailUrl[];
 }
 
 export class ListChildrenOutput extends PaginationOutput {
