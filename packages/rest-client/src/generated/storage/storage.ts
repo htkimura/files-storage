@@ -31,6 +31,7 @@ import type {
   FileWithPresignedUrl,
   GetBulkFilesByIdsParams,
   GetPresignedUploadUrlParams,
+  ListChildrenOutput,
   ListChildrenParams,
   MoveFileToFolderDto,
   UploadFileOutput
@@ -416,7 +417,7 @@ export const useDeleteFileById = <TData = Awaited<ReturnType<typeof deleteFileBy
  */
 export const listChildren = (
     params: ListChildrenParams, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<FileWithPresignedUrl>> => {
+ ): Promise<AxiosResponse<ListChildrenOutput>> => {
     
     
     return axios.get(

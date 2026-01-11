@@ -18,6 +18,8 @@ export * from './folder';
 export * from './getBulkFilesByIdsParams';
 export * from './getPresignedUploadUrlParams';
 export * from './getUserFilesOutput';
+export * from './listChildrenData';
+export * from './listChildrenOutput';
 export * from './listChildrenParams';
 export * from './loginDto';
 export * from './moveFileToFolderDto';
