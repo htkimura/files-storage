@@ -20,6 +20,7 @@ import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Queue } from 'bullmq';
 
 import { ListChildrenDto, MoveFileToFolderDto } from './dto';
+import { ListChildrenOutput } from './models';
 import { StorageService } from './storage.service';
 
 @Controller()
@@ -154,7 +155,7 @@ export class StorageController {
   })
   @ApiResponse({
     status: 200,
-    type: FileWithPresignedUrl,
+    type: ListChildrenOutput,
   })
   listChildren(@AuthUser() user: JUser, @Query() input: ListChildrenDto) {
     return this.storageService.listChildren({
