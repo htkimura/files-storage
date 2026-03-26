@@ -1,9 +1,13 @@
 import {
+  AbortMultipartUploadCommand,
+  CompleteMultipartUploadCommand,
+  CreateMultipartUploadCommand,
   DeleteObjectCommand,
   DeleteObjectsCommand,
   GetObjectCommand,
   PutObjectCommand,
   S3Client,
+  UploadPartCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import {
@@ -70,6 +74,73 @@ export class R2Service {
     );
 
     return { presignedUploadUrl, key, id };
+  }
+
+  async createMultipartUpload(
+    userId: string,
+    file: { name: string; type: string; size: number },
+  ) {
+    const now = new Date();
+    const id = uuid();
+    const key = `uploads/${userId}/${now.getUTCFullYear()}/${now.getUTCMonth() + 1}/originals/${id}-${file.name}`;
+
+    const result = await this.s3Client.send(
+      new CreateMultipartUploadCommand({
+        Bucket: R2_BUCKET_NAME,
+        Key: key,
+        ContentType: file.type,
+      }),
+    );
+
+    const uploadId = result.UploadId;
+
+    if (!uploadId) {
+      throw new Error('CreateMultipartUpload did not return UploadId');
+    }
+
+    return { uploadId, key, id };
+  }
+
+  getPresignedUploadPartUrl(key: string, uploadId: string, partNumber: number) {
+    const command = new UploadPartCommand({
+      Bucket: R2_BUCKET_NAME,
+      Key: key,
+      UploadId: uploadId,
+      PartNumber: partNumber,
+    });
+
+    return getSignedUrl(this.s3Client as any, command, {
+      expiresIn: 60 * 15,
+    });
+  }
+
+  finalizeMultipartObject(
+    key: string,
+    uploadId: string,
+    parts: { PartNumber: number; ETag: string }[],
+  ) {
+    const sorted = [...parts].sort((a, b) => a.PartNumber - b.PartNumber);
+
+    return this.s3Client.send(
+      new CompleteMultipartUploadCommand({
+        Bucket: R2_BUCKET_NAME,
+        Key: key,
+        UploadId: uploadId,
+        MultipartUpload: {
+          Parts: sorted,
+        },
+      }),
+    );
+  }
+
+  cancelMultipartObject(key: string, uploadId: string) {
+    return this.s3Client.send(
+      new AbortMultipartUploadCommand({
+        Bucket: R2_BUCKET_NAME,
+        Key: key,
+        UploadId: uploadId,
+      }),
+    );
   }
 
   putObject(key: string, body: Buffer, contentType: string) {
