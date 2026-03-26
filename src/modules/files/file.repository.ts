@@ -32,6 +32,7 @@ export class FileRepository {
     return this.prismaService.file.findMany({
       where: {
         userId,
+        multipartUploadId: { isSet: false },
         ...filters,
       },
       skip,
@@ -47,6 +48,7 @@ export class FileRepository {
       where: {
         userId,
         folderId,
+        multipartUploadId: { isSet: false },
       },
     });
   }

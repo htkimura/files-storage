@@ -22,6 +22,9 @@ export class File extends Entity {
 
   @ApiPropertyOptional()
   folderId?: string;
+
+  @ApiPropertyOptional()
+  multipartUploadId?: string;
 }
 
 export class FileWithPresignedUrl extends File {

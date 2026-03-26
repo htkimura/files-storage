@@ -24,6 +24,7 @@ model File {
   type String
   size Int
   path String
+  multipartUploadId String? @map("multipart_upload_id")
   thumbnailPath String? @map("thumbnail_path")
   userId String @map("user_id")
   user User @relation(fields: [userId], references: [id])
