@@ -2,9 +2,15 @@ import { buffer } from 'node:stream/consumers';
 
 import { File, FileService } from '@modules/files';
 import { UserService } from '@modules/users/user.service';
-import { Injectable, NotFoundException } from '@nestjs/common';
-import * as sharp from 'sharp';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 
+import {
+  bufferToWebpThumbnail,
+  errMessage,
+  heicBufferToJpeg,
+  isHeifDecodeUnsupported,
+  isLikelyHeic,
+} from '../helpers';
 import { R2Service } from '../r2.service';
 
 export interface CreateImageThumbnailArgs {
@@ -14,6 +20,8 @@ export interface CreateImageThumbnailArgs {
 
 @Injectable()
 export class CreateImageThumbnailUseCase {
+  private readonly logger = new Logger(CreateImageThumbnailUseCase.name);
+
   constructor(
     private readonly userService: UserService,
     private readonly fileService: FileService,
@@ -35,14 +43,49 @@ export class CreateImageThumbnailUseCase {
 
     const originalBuffer = await buffer(original.Body as any);
 
-    const thumbnail = await sharp(originalBuffer)
-      .resize(300)
-      .webp({ quality: 60 })
-      .toBuffer();
+    const contentType = original.ContentType ?? undefined;
 
-    const fileNameSplit = file.path.split('/').pop()?.split('.');
-    fileNameSplit.pop();
-    const newFileName = [...fileNameSplit, 'webp'].join('.');
+    const heicLikely = isLikelyHeic(contentType, file.path, originalBuffer);
+    let thumbnail: Buffer;
+
+    try {
+      if (heicLikely) {
+        const jpegBuffer = await heicBufferToJpeg(originalBuffer);
+        thumbnail = await bufferToWebpThumbnail(jpegBuffer);
+      } else {
+        thumbnail = await bufferToWebpThumbnail(originalBuffer);
+      }
+    } catch (err) {
+      if (heicLikely) {
+        this.logger.warn(
+          `Thumbnail skipped for file ${fileId} (HEIC pipeline): ${errMessage(err)}`,
+        );
+        return file;
+      }
+      if (isHeifDecodeUnsupported(err)) {
+        try {
+          const jpegBuffer = await heicBufferToJpeg(originalBuffer);
+          thumbnail = await bufferToWebpThumbnail(jpegBuffer);
+        } catch (err2) {
+          this.logger.warn(
+            `Thumbnail skipped for file ${fileId}: ${errMessage(err2)}`,
+          );
+          return file;
+        }
+      } else {
+        throw err;
+      }
+    }
+
+    const nameSegments = file.path.split('/').pop()?.split('.') ?? [];
+    if (nameSegments.length < 2) {
+      this.logger.warn(
+        `Thumbnail skipped for file ${fileId}: path has no extension`,
+      );
+      return file;
+    }
+    const stemParts = nameSegments.slice(0, -1);
+    const newFileName = [...stemParts, 'webp'].join('.');
 
     const thumbnailPathSplit = file.path
       .replace('originals', 'thumbnails')
