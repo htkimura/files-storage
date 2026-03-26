@@ -11,6 +11,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Query,
@@ -19,8 +20,17 @@ import {
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Queue } from 'bullmq';
 
-import { ListChildrenDto, MoveFileToFolderDto } from './dto';
-import { ListChildrenOutput } from './models';
+import {
+  CompleteMultipartUploadDto,
+  InitMultipartUploadDto,
+  ListChildrenDto,
+  MoveFileToFolderDto,
+} from './dto';
+import {
+  InitMultipartUploadOutput,
+  ListChildrenOutput,
+  MultipartPartUrlOutput,
+} from './models';
 import { StorageService } from './storage.service';
 
 @Controller()
@@ -57,6 +67,102 @@ export class StorageController {
         type,
         size,
       },
+    });
+  }
+
+  @Post('uploads/multipart/init')
+  @UseGuards(AuthGuard)
+  @ApiOperation({
+    operationId: 'initMultipartUpload',
+    summary: 'Start a multipart upload (R2 / S3)',
+    description:
+      'Creates the file record and an R2 multipart upload. Upload each part via presigned part URLs, then call complete.',
+  })
+  @ApiResponse({
+    status: 201,
+    type: InitMultipartUploadOutput,
+  })
+  initMultipartUpload(
+    @Body() body: InitMultipartUploadDto,
+    @AuthUser() user: JUser,
+  ) {
+    return this.storageService.initMultipartUpload({
+      userId: user._id,
+      fileInput: {
+        name: body.fileName,
+        type: body.fileType,
+        size: body.fileSize,
+      },
+    });
+  }
+
+  @Get('uploads/multipart/part-url')
+  @UseGuards(AuthGuard)
+  @ApiOperation({
+    operationId: 'getMultipartPartUrl',
+    summary: 'Presigned URL for a single multipart part',
+  })
+  @ApiResponse({
+    status: 200,
+    type: MultipartPartUrlOutput,
+  })
+  getMultipartPartUrl(
+    @Query('fileId') fileId: string,
+    @Query('partNumber', ParseIntPipe) partNumber: number,
+    @AuthUser() user: JUser,
+  ) {
+    return this.storageService.getMultipartPartUrl({
+      userId: user._id,
+      fileId,
+      partNumber,
+    });
+  }
+
+  @Post('uploads/multipart/complete')
+  @UseGuards(AuthGuard)
+  @ApiOperation({
+    operationId: 'completeMultipartUpload',
+    summary: 'Finish multipart upload',
+    description:
+      'Completes the multipart upload on R2, clears in-progress state, and enqueues thumbnail generation when applicable.',
+  })
+  @ApiResponse({
+    status: 200,
+    type: Boolean,
+  })
+  completeMultipartUpload(
+    @Body() body: CompleteMultipartUploadDto,
+    @AuthUser() user: JUser,
+  ) {
+    return this.storageService.completeMultipartUpload({
+      userId: user._id,
+      fileId: body.fileId,
+      parts: body.parts.map((p) => ({
+        partNumber: p.partNumber,
+        etag: p.etag,
+      })),
+    });
+  }
+
+  @Delete('uploads/multipart/abort')
+  @UseGuards(AuthGuard)
+  @ApiOperation({
+    operationId: 'abortMultipartUpload',
+    summary: 'Abort multipart upload',
+    description:
+      'Aborts the R2 multipart upload and deletes the pending file record.',
+  })
+  @ApiResponse({
+    status: 200,
+    type: Boolean,
+  })
+  abortMultipartUpload(
+    @Query('fileId') fileId: string,
+    @AuthUser() user: JUser,
+  ) {
+    return this.storageService.abortMultipartUpload({
+      userId: user._id,
+      fileId,
     });
   }
 

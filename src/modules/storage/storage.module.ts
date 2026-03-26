@@ -8,23 +8,31 @@ import { R2Service } from './r2.service';
 import { StorageController } from './storage.controller';
 import { StorageService } from './storage.service';
 import {
+  AbortMultipartUploadUseCase,
+  CompleteMultipartUploadUseCase,
   CreateImageThumbnailUseCase,
   DeleteBulkFilesByIdsUseCase,
   DeleteFileByIdUseCase,
   GetBulkFilesByIdsUseCase,
   GetFileByIdUseCase,
+  GetMultipartPartUrlUseCase,
   GetPresignedUploadUrlUseCase,
+  InitMultipartUploadUseCase,
   ListChildrenUseCase,
   MoveFileToFolderUseCase,
 } from './use-cases';
 
 const useCases = [
+  AbortMultipartUploadUseCase,
+  CompleteMultipartUploadUseCase,
   CreateImageThumbnailUseCase,
   DeleteBulkFilesByIdsUseCase,
   DeleteFileByIdUseCase,
   GetBulkFilesByIdsUseCase,
   GetFileByIdUseCase,
+  GetMultipartPartUrlUseCase,
   GetPresignedUploadUrlUseCase,
+  InitMultipartUploadUseCase,
   ListChildrenUseCase,
   MoveFileToFolderUseCase,
 ];
