@@ -52,6 +52,13 @@ export class FolderRepository {
     });
   }
 
+  listAllByUserId(userId: string): Promise<Folder[]> {
+    return this.prismaService.folder.findMany({
+      where: { userId },
+      orderBy: { updatedAt: 'desc' },
+    });
+  }
+
   update(id: string, data: UpdateFolderInput): Promise<Folder> {
     const now = new Date();
 
