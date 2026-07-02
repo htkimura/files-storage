@@ -5,6 +5,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Param,
   Patch,
   Post,
@@ -20,6 +21,22 @@ import { FolderService } from './folder.service';
 @Controller('folders')
 export class FolderController {
   constructor(private readonly folderService: FolderService) {}
+
+  @Get()
+  @UseGuards(AuthGuard)
+  @ApiOperation({
+    operationId: 'listMyFolders',
+    summary: 'List all folders',
+    description:
+      'Returns every folder belonging to the authenticated user, in any parent location.',
+  })
+  @ApiResponse({
+    status: 200,
+    type: [Folder],
+  })
+  listMyFolders(@AuthUser() user: JUser) {
+    return this.folderService.listAllFoldersForUser(user._id);
+  }
 
   @Post()
   @UseGuards(AuthGuard)

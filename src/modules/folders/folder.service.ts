@@ -48,4 +48,8 @@ export class FolderService extends FolderRepository {
   }): Promise<Folder[]> {
     return this.getManyByUserId(args);
   }
+
+  listAllFoldersForUser(userId: string): Promise<Folder[]> {
+    return this.listAllByUserId(userId);
+  }
 }
