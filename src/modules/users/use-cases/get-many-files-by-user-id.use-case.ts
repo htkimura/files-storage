@@ -3,6 +3,7 @@ import { FileFilterType } from '@common/enums';
 import { Obj } from '@common/types';
 import { FileRepository } from '@modules/files/file.repository';
 import { GetUserFilesOutput } from '@modules/files/models';
+import { FolderService } from '@modules/folders/folder.service';
 import { R2Service } from '@modules/storage/r2.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
 
@@ -18,6 +19,7 @@ export class GetManyFilesByUserIdUseCase {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly fileRepository: FileRepository,
+    private readonly folderService: FolderService,
     private readonly r2Service: R2Service,
   ) {}
 
@@ -26,12 +28,21 @@ export class GetManyFilesByUserIdUseCase {
     page,
     size,
     filterType,
+    folderId,
   }: GetUserFilesArgs): Promise<GetUserFilesOutput> {
     const foundUser = await this.userRepository.getById(userId);
 
     if (!foundUser) throw new NotFoundException('User not found');
 
-    const filters = this.getFilters({ filterType });
+    if (folderId) {
+      const folder = await this.folderService.getById(folderId);
+
+      if (folder?.userId !== userId) {
+        throw new NotFoundException('Folder not found');
+      }
+    }
+
+    const filters = this.getFilters({ filterType, folderId });
 
     const [files, total] = await Promise.all([
       this.fileRepository.getManyByUserId({
@@ -79,8 +90,15 @@ export class GetManyFilesByUserIdUseCase {
     };
   }
 
-  private getFilters({ filterType }: Pick<GetUserFilesArgs, 'filterType'>) {
+  private getFilters({
+    filterType,
+    folderId,
+  }: Pick<GetUserFilesArgs, 'filterType' | 'folderId'>) {
     const baseFilter: Obj = {};
+
+    if (folderId !== undefined) {
+      baseFilter.folderId = folderId === null ? { isSet: false } : folderId;
+    }
 
     if (filterType) {
       if (filterType.includes(FileFilterType.IMAGE))

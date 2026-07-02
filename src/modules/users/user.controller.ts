@@ -74,7 +74,8 @@ export class UserController {
   @ApiOperation({
     operationId: 'myFiles',
     summary: 'Get the authenticated user files URLs',
-    description: 'Returns the authenticated user files URLs',
+    description:
+      'Returns the authenticated user files. Omit folderId to return all files, pass null for root-level files only, or pass a folder ID to return files from that folder.',
   })
   @ApiResponse({
     status: 200,

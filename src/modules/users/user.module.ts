@@ -1,4 +1,5 @@
 import { FileModule } from '@modules/files';
+import { FolderModule } from '@modules/folders';
 import { StorageModule } from '@modules/storage';
 import { Module } from '@nestjs/common';
 
@@ -23,7 +24,7 @@ const useCases = [
 ];
 
 @Module({
-  imports: [FileModule, StorageModule],
+  imports: [FileModule, FolderModule, StorageModule],
   controllers: [UserController],
   exports: [AuthService, UserService],
   providers: [...useCases, AuthService, UserService, UserRepository],

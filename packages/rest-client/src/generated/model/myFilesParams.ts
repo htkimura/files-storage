@@ -8,7 +8,11 @@
 import type { FileFilterType } from './fileFilterType';
 
 export type MyFilesParams = {
-page?: number;
-size?: number;
-filterType?: FileFilterType[];
+  page?: number;
+  size?: number;
+  filterType?: FileFilterType[];
+  /**
+   * Filter by folder. Omit to return all files. Pass null for root-level files only.
+   */
+  folderId?: string | null;
 };
