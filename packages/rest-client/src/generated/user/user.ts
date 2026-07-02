@@ -282,7 +282,7 @@ export function useMe<TData = Awaited<ReturnType<typeof me>>, TError = AxiosErro
 
 
 /**
- * Returns the authenticated user files URLs
+ * Returns the authenticated user files. Omit folderId to return all files, pass null for root-level files only, or pass a folder ID to return files from that folder.
  * @summary Get the authenticated user files URLs
  */
 export const myFiles = (
