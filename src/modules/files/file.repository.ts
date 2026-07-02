@@ -43,12 +43,21 @@ export class FileRepository {
     });
   }
 
-  getCountByUserId(userId: string, folderId?: string | null): Promise<number> {
+  getCountByUserId(
+    userId: string,
+    folderId?: string | null,
+    additionalFilters?: Obj,
+  ): Promise<number> {
     return this.prismaService.file.count({
       where: {
         userId,
-        folderId,
         multipartUploadId: { isSet: false },
+        ...(folderId !== undefined
+          ? {
+              folderId: folderId === null ? { isSet: false } : folderId,
+            }
+          : {}),
+        ...additionalFilters,
       },
     });
   }

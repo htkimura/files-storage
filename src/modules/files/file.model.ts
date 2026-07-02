@@ -33,6 +33,6 @@ export class FileWithPresignedUrl extends File {
 }
 
 export class FileWithPresignedThumbnailUrl extends File {
-  @ApiProperty()
+  @ApiPropertyOptional()
   presignedThumbnailUrl?: string;
 }

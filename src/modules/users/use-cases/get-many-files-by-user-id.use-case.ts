@@ -40,29 +40,41 @@ export class GetManyFilesByUserIdUseCase {
         take: size,
         filters,
       }),
-      this.fileRepository.getCountByUserId(userId),
+      this.fileRepository.getCountByUserId(userId, undefined, filters),
     ]);
 
-    const shouldGetThumbnails = filterType?.includes(FileFilterType.IMAGE);
+    const filesWithThumbnails = files.filter((file) => file.thumbnailPath);
 
-    console.log('[shouldGetThumbnails]', shouldGetThumbnails);
-
-    if (!shouldGetThumbnails)
-      return { page, size, total, hasMore: total > page * size, data: files };
+    if (filesWithThumbnails.length === 0) {
+      return {
+        page,
+        size,
+        total,
+        hasMore: total > page * size,
+        data: files,
+      };
+    }
 
     const presignedThumbnailUrls =
       await this.r2Service.generateManyPresignedUrls(
-        files.map((file) => file.thumbnailPath),
+        filesWithThumbnails.map((file) => file.thumbnailPath!),
       );
+
+    const thumbnailUrlMap = new Map(
+      filesWithThumbnails.map((file, index) => [
+        file.id,
+        presignedThumbnailUrls[index],
+      ]),
+    );
 
     return {
       page,
       size,
       total,
       hasMore: total > page * size,
-      data: files.map((file, index) => ({
+      data: files.map((file) => ({
         ...file,
-        presignedThumbnailUrl: presignedThumbnailUrls[index],
+        presignedThumbnailUrl: thumbnailUrlMap.get(file.id),
       })),
     };
   }
