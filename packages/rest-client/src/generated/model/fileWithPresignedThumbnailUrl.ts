@@ -17,5 +17,5 @@ export interface FileWithPresignedThumbnailUrl {
   thumbnailPath?: string;
   userId: string;
   folderId?: string;
-  presignedThumbnailUrl: string;
+  presignedThumbnailUrl?: string;
 }

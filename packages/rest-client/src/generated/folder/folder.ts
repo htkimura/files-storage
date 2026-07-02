@@ -6,12 +6,17 @@
  * OpenAPI spec version: 1.0
  */
 import {
-  useMutation
+  useMutation,
+  useQuery
 } from '@tanstack/react-query'
 import type {
   MutationFunction,
+  QueryFunction,
+  QueryKey,
   UseMutationOptions,
-  UseMutationResult
+  UseMutationResult,
+  UseQueryOptions,
+  UseQueryResult
 } from '@tanstack/react-query'
 import axios from 'axios'
 import type {
@@ -25,6 +30,62 @@ import type {
   RenameFolderDto,
   UpdateParentFolderDto
 } from '.././model'
+
+/**
+ * Returns every folder belonging to the authenticated user
+ * @summary List all folders
+ */
+export const listMyFolders = (
+     options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<Folder[]>> => {
+    return axios.get(`/folders`, options);
+  }
+
+
+export const getListMyFoldersQueryKey = () => {
+    return [`/folders`] as const;
+    }
+
+    
+export const getListMyFoldersQueryOptions = <TData = Awaited<ReturnType<typeof listMyFolders>>, TError = AxiosError<unknown>>(options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listMyFolders>>, TError, TData>, axios?: AxiosRequestConfig}
+) => {
+
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListMyFoldersQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listMyFolders>>> = ({ signal }) => listMyFolders({ signal, ...axiosOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listMyFolders>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListMyFoldersQueryResult = NonNullable<Awaited<ReturnType<typeof listMyFolders>>>
+export type ListMyFoldersQueryError = AxiosError<unknown>
+
+
+/**
+ * @summary List all folders
+ */
+
+export function useListMyFolders<TData = Awaited<ReturnType<typeof listMyFolders>>, TError = AxiosError<unknown>>(
+ options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listMyFolders>>, TError, TData>, axios?: AxiosRequestConfig}
+
+  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListMyFoldersQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
 
 
 
