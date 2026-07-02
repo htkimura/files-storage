@@ -25,15 +25,21 @@ import type {
   AxiosResponse
 } from 'axios'
 import type {
+  AbortMultipartUploadParams,
+  CompleteMultipartUploadDto,
   DeleteBulkFilesByIdsParams,
   DeleteBulkFilesOutput,
   File,
   FileWithPresignedUrl,
   GetBulkFilesByIdsParams,
+  GetMultipartPartUrlParams,
   GetPresignedUploadUrlParams,
+  InitMultipartUploadDto,
+  InitMultipartUploadOutput,
   ListChildrenOutput,
   ListChildrenParams,
   MoveFileToFolderDto,
+  MultipartPartUrlOutput,
   UploadFileOutput
 } from '.././model'
 
@@ -104,6 +110,253 @@ export function useGetPresignedUploadUrl<TData = Awaited<ReturnType<typeof getPr
 
 
 /**
+ * Creates the file record and an R2 multipart upload. Upload each part via presigned part URLs, then call complete.
+ * @summary Start a multipart upload (R2 / S3)
+ */
+export const initMultipartUpload = (
+    initMultipartUploadDto: InitMultipartUploadDto, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<InitMultipartUploadOutput>> => {
+    
+    
+    return axios.post(
+      `/uploads/multipart/init`,
+      initMultipartUploadDto,options
+    );
+  }
+
+
+
+export const getInitMultipartUploadMutationOptions = <TData = Awaited<ReturnType<typeof initMultipartUpload>>, TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{data: InitMultipartUploadDto}, TContext>, axios?: AxiosRequestConfig}
+) => {
+const mutationKey = ['initMultipartUpload'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, axios: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof initMultipartUpload>>, {data: InitMultipartUploadDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  initMultipartUpload(data,axiosOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions } as UseMutationOptions<TData, TError,{data: InitMultipartUploadDto}, TContext>}
+
+    export type InitMultipartUploadMutationResult = NonNullable<Awaited<ReturnType<typeof initMultipartUpload>>>
+    export type InitMultipartUploadMutationBody = InitMultipartUploadDto
+    export type InitMultipartUploadMutationError = AxiosError<unknown>
+
+    /**
+ * @summary Start a multipart upload (R2 / S3)
+ */
+export const useInitMultipartUpload = <TData = Awaited<ReturnType<typeof initMultipartUpload>>, TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{data: InitMultipartUploadDto}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationResult<
+        TData,
+        TError,
+        {data: InitMultipartUploadDto},
+        TContext
+      > => {
+
+      const mutationOptions = getInitMultipartUploadMutationOptions(options);
+
+      return useMutation(mutationOptions);
+    }
+    /**
+ * @summary Presigned URL for a single multipart part
+ */
+export const getMultipartPartUrl = (
+    params: GetMultipartPartUrlParams, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<MultipartPartUrlOutput>> => {
+    
+    
+    return axios.get(
+      `/uploads/multipart/part-url`,{
+    ...options,
+        params: {...params, ...options?.params},}
+    );
+  }
+
+
+export const getGetMultipartPartUrlQueryKey = (params: GetMultipartPartUrlParams,) => {
+    return [`/uploads/multipart/part-url`, ...(params ? [params]: [])] as const;
+    }
+
+    
+export const getGetMultipartPartUrlQueryOptions = <TData = Awaited<ReturnType<typeof getMultipartPartUrl>>, TError = AxiosError<unknown>>(params: GetMultipartPartUrlParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMultipartPartUrl>>, TError, TData>, axios?: AxiosRequestConfig}
+) => {
+
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetMultipartPartUrlQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMultipartPartUrl>>> = ({ signal }) => getMultipartPartUrl(params, { signal, ...axiosOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMultipartPartUrl>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetMultipartPartUrlQueryResult = NonNullable<Awaited<ReturnType<typeof getMultipartPartUrl>>>
+export type GetMultipartPartUrlQueryError = AxiosError<unknown>
+
+
+/**
+ * @summary Presigned URL for a single multipart part
+ */
+
+export function useGetMultipartPartUrl<TData = Awaited<ReturnType<typeof getMultipartPartUrl>>, TError = AxiosError<unknown>>(
+ params: GetMultipartPartUrlParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getMultipartPartUrl>>, TError, TData>, axios?: AxiosRequestConfig}
+
+  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetMultipartPartUrlQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+/**
+ * Completes the multipart upload on R2, clears in-progress state, and enqueues thumbnail generation when applicable.
+ * @summary Finish multipart upload
+ */
+export const completeMultipartUpload = (
+    completeMultipartUploadDto: CompleteMultipartUploadDto, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<boolean>> => {
+    
+    
+    return axios.post(
+      `/uploads/multipart/complete`,
+      completeMultipartUploadDto,options
+    );
+  }
+
+
+
+export const getCompleteMultipartUploadMutationOptions = <TData = Awaited<ReturnType<typeof completeMultipartUpload>>, TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{data: CompleteMultipartUploadDto}, TContext>, axios?: AxiosRequestConfig}
+) => {
+const mutationKey = ['completeMultipartUpload'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, axios: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof completeMultipartUpload>>, {data: CompleteMultipartUploadDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  completeMultipartUpload(data,axiosOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions } as UseMutationOptions<TData, TError,{data: CompleteMultipartUploadDto}, TContext>}
+
+    export type CompleteMultipartUploadMutationResult = NonNullable<Awaited<ReturnType<typeof completeMultipartUpload>>>
+    export type CompleteMultipartUploadMutationBody = CompleteMultipartUploadDto
+    export type CompleteMultipartUploadMutationError = AxiosError<unknown>
+
+    /**
+ * @summary Finish multipart upload
+ */
+export const useCompleteMultipartUpload = <TData = Awaited<ReturnType<typeof completeMultipartUpload>>, TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{data: CompleteMultipartUploadDto}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationResult<
+        TData,
+        TError,
+        {data: CompleteMultipartUploadDto},
+        TContext
+      > => {
+
+      const mutationOptions = getCompleteMultipartUploadMutationOptions(options);
+
+      return useMutation(mutationOptions);
+    }
+    /**
+ * Aborts the R2 multipart upload and deletes the pending file record.
+ * @summary Abort multipart upload
+ */
+export const abortMultipartUpload = (
+    params: AbortMultipartUploadParams, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<boolean>> => {
+    
+    
+    return axios.delete(
+      `/uploads/multipart/abort`,{
+    ...options,
+        params: {...params, ...options?.params},}
+    );
+  }
+
+
+
+export const getAbortMultipartUploadMutationOptions = <TData = Awaited<ReturnType<typeof abortMultipartUpload>>, TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{params: AbortMultipartUploadParams}, TContext>, axios?: AxiosRequestConfig}
+) => {
+const mutationKey = ['abortMultipartUpload'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, axios: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof abortMultipartUpload>>, {params: AbortMultipartUploadParams}> = (props) => {
+          const {params} = props ?? {};
+
+          return  abortMultipartUpload(params,axiosOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions } as UseMutationOptions<TData, TError,{params: AbortMultipartUploadParams}, TContext>}
+
+    export type AbortMultipartUploadMutationResult = NonNullable<Awaited<ReturnType<typeof abortMultipartUpload>>>
+    
+    export type AbortMultipartUploadMutationError = AxiosError<unknown>
+
+    /**
+ * @summary Abort multipart upload
+ */
+export const useAbortMultipartUpload = <TData = Awaited<ReturnType<typeof abortMultipartUpload>>, TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{params: AbortMultipartUploadParams}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationResult<
+        TData,
+        TError,
+        {params: AbortMultipartUploadParams},
+        TContext
+      > => {
+
+      const mutationOptions = getAbortMultipartUploadMutationOptions(options);
+
+      return useMutation(mutationOptions);
+    }
+    /**
  * Confirms the file upload, adding the file to the thumbnail queue
  * @summary Confirms the image upload
  */

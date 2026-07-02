@@ -31,14 +31,20 @@ import type {
   UpdateParentFolderDto
 } from '.././model'
 
+
+
 /**
- * Returns every folder belonging to the authenticated user
+ * Returns every folder belonging to the authenticated user, in any parent location.
  * @summary List all folders
  */
 export const listMyFolders = (
      options?: AxiosRequestConfig
  ): Promise<AxiosResponse<Folder[]>> => {
-    return axios.get(`/folders`, options);
+    
+    
+    return axios.get(
+      `/folders`,options
+    );
   }
 
 
@@ -47,7 +53,7 @@ export const getListMyFoldersQueryKey = () => {
     }
 
     
-export const getListMyFoldersQueryOptions = <TData = Awaited<ReturnType<typeof listMyFolders>>, TError = AxiosError<unknown>>(options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listMyFolders>>, TError, TData>, axios?: AxiosRequestConfig}
+export const getListMyFoldersQueryOptions = <TData = Awaited<ReturnType<typeof listMyFolders>>, TError = AxiosError<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listMyFolders>>, TError, TData>, axios?: AxiosRequestConfig}
 ) => {
 
 const {query: queryOptions, axios: axiosOptions} = options ?? {};
@@ -74,7 +80,7 @@ export type ListMyFoldersQueryError = AxiosError<unknown>
  */
 
 export function useListMyFolders<TData = Awaited<ReturnType<typeof listMyFolders>>, TError = AxiosError<unknown>>(
- options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listMyFolders>>, TError, TData>, axios?: AxiosRequestConfig}
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listMyFolders>>, TError, TData>, axios?: AxiosRequestConfig}
 
   ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 

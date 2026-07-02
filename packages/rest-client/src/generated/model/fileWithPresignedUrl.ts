@@ -17,5 +17,6 @@ export interface FileWithPresignedUrl {
   thumbnailPath?: string;
   userId: string;
   folderId?: string;
+  multipartUploadId?: string;
   presignedUrl: string;
 }

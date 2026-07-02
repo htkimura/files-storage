@@ -6,6 +6,8 @@
  * OpenAPI spec version: 1.0
  */
 
+export * from './abortMultipartUploadParams';
+export * from './completeMultipartUploadDto';
 export * from './createFolderDto';
 export * from './createUserDto';
 export * from './deleteBulkFilesByIdsParams';
@@ -16,13 +18,18 @@ export * from './fileWithPresignedThumbnailUrl';
 export * from './fileWithPresignedUrl';
 export * from './folder';
 export * from './getBulkFilesByIdsParams';
+export * from './getMultipartPartUrlParams';
 export * from './getPresignedUploadUrlParams';
 export * from './getUserFilesOutput';
+export * from './initMultipartUploadDto';
+export * from './initMultipartUploadOutput';
 export * from './listChildrenData';
 export * from './listChildrenOutput';
 export * from './listChildrenParams';
 export * from './loginDto';
 export * from './moveFileToFolderDto';
+export * from './multipartPartUrlOutput';
+export * from './multipartUploadedPartDto';
 export * from './myFilesParams';
 export * from './refreshTokenDto';
 export * from './renameFolderDto';
