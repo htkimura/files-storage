@@ -97,7 +97,11 @@ export class GetManyFilesByUserIdUseCase {
     const baseFilter: Obj = {};
 
     if (folderId !== undefined) {
-      baseFilter.folderId = folderId === null ? { isSet: false } : folderId;
+      if (folderId === null) {
+        baseFilter.OR = [{ folderId: { isSet: false } }, { folderId: null }];
+      } else {
+        baseFilter.folderId = folderId;
+      }
     }
 
     if (filterType) {
