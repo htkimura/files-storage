@@ -6,12 +6,14 @@ import { FolderService } from './folder.service';
 import {
   CreateFolderUseCase,
   DeleteFolderUseCase,
+  ListMyFoldersUseCase,
   RenameFolderUseCase,
   UpdateParentFolderUseCase,
 } from './use-cases';
 
 const useCases = [
   CreateFolderUseCase,
+  ListMyFoldersUseCase,
   RenameFolderUseCase,
   UpdateParentFolderUseCase,
   DeleteFolderUseCase,

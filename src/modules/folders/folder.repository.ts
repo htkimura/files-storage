@@ -43,12 +43,26 @@ export class FolderRepository {
   }
 
   getManyByUserId({ userId, parentFolderId }: GetManyInput): Promise<Folder[]> {
+    if (parentFolderId === undefined) {
+      return this.listAllByUserId(userId);
+    }
+
+    const parentFolderFilter =
+      parentFolderId === null
+        ? {
+            OR: [
+              { parentFolderId: { isSet: false } },
+              { parentFolderId: null },
+            ],
+          }
+        : { parentFolderId };
+
     return this.prismaService.folder.findMany({
       where: {
         userId,
-        parentFolderId:
-          parentFolderId === null ? { isSet: false } : parentFolderId,
+        ...parentFolderFilter,
       },
+      orderBy: { updatedAt: 'desc' },
     });
   }
 

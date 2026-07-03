@@ -10,11 +10,17 @@ import {
   Patch,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
-import { CreateFolderDto, RenameFolderDto, UpdateParentFolderDto } from './dto';
+import {
+  CreateFolderDto,
+  ListMyFoldersDto,
+  RenameFolderDto,
+  UpdateParentFolderDto,
+} from './dto';
 import { Folder } from './folder.model';
 import { FolderService } from './folder.service';
 
@@ -28,14 +34,14 @@ export class FolderController {
     operationId: 'listMyFolders',
     summary: 'List all folders',
     description:
-      'Returns every folder belonging to the authenticated user, in any parent location.',
+      'Returns folders for the authenticated user. Omit parentFolderId to return all folders, pass null for root-level folders only, or pass a folder ID to return direct child folders.',
   })
   @ApiResponse({
     status: 200,
     type: [Folder],
   })
-  listMyFolders(@AuthUser() user: JUser) {
-    return this.folderService.listAllFoldersForUser(user._id);
+  listMyFolders(@AuthUser() user: JUser, @Query() input: ListMyFoldersDto) {
+    return this.folderService.listMyFolders({ userId: user._id, ...input });
   }
 
   @Post()

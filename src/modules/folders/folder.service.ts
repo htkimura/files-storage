@@ -8,6 +8,8 @@ import {
   CreateFolderUseCase,
   DeleteFolderArgs,
   DeleteFolderUseCase,
+  ListMyFoldersArgs,
+  ListMyFoldersUseCase,
   RenameFolderArgs,
   RenameFolderUseCase,
   UpdateParentFolderArgs,
@@ -19,6 +21,7 @@ export class FolderService extends FolderRepository {
   constructor(
     prismaService: PrismaService,
     private readonly createFolderUseCase: CreateFolderUseCase,
+    private readonly listMyFoldersUseCase: ListMyFoldersUseCase,
     private readonly renameFolderUseCase: RenameFolderUseCase,
     private readonly updateParentFolderUseCase: UpdateParentFolderUseCase,
     private readonly deleteFolderUseCase: DeleteFolderUseCase,
@@ -47,6 +50,10 @@ export class FolderService extends FolderRepository {
     parentFolderId?: string | null;
   }): Promise<Folder[]> {
     return this.getManyByUserId(args);
+  }
+
+  listMyFolders(args: ListMyFoldersArgs): Promise<Folder[]> {
+    return this.listMyFoldersUseCase.execute(args);
   }
 
   listAllFoldersForUser(userId: string): Promise<Folder[]> {

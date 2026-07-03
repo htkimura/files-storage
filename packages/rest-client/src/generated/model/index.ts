@@ -26,6 +26,7 @@ export * from './initMultipartUploadOutput';
 export * from './listChildrenData';
 export * from './listChildrenOutput';
 export * from './listChildrenParams';
+export * from './listMyFoldersParams';
 export * from './loginDto';
 export * from './moveFileToFolderDto';
 export * from './multipartPartUrlOutput';
