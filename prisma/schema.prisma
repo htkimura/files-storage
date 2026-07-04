@@ -13,6 +13,7 @@ model User {
   password String
   refreshToken String? @map("refresh_token")
   storageConsumedCount Int @default(0) @map("storage_consumed_count")
+  tier String @default("free")
 
   files File[]
   folders Folder[]

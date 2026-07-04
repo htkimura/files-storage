@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 
+import { DEFAULT_USER_TIER, USER_TIER } from './user-plan.utils';
+
 export class User {
   @ApiProperty()
   id: string;
@@ -18,6 +20,13 @@ export class User {
     description: 'Total bytes consumed by completed user files',
   })
   storageConsumedCount: number;
+
+  @ApiProperty({
+    description: 'Subscription tier stored on the user record',
+    enum: Object.values(USER_TIER),
+    default: DEFAULT_USER_TIER,
+  })
+  tier: string;
 }
 
 export class UserLogin {
