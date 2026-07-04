@@ -52,10 +52,32 @@ export class UserRepository {
     return this.transformUser(user);
   }
 
+  async adjustStorageConsumedCount(userId: string, deltaBytes: number) {
+    const user = await this.prismaService.user.update({
+      where: { id: userId },
+      data: { storageConsumedCount: { increment: deltaBytes } },
+    });
+
+    return this.transformUser(user);
+  }
+
+  async setStorageConsumedCount(userId: string, count: number) {
+    const user = await this.prismaService.user.update({
+      where: { id: userId },
+      data: { storageConsumedCount: count },
+    });
+
+    return this.transformUser(user);
+  }
+
   transformUser(user: PrismaUser, includePassword?: boolean) {
     const { password, ...userWithoutPassword } = user;
 
-    const baseUserWithoutPassword = { ...userWithoutPassword, _id: user.id };
+    const baseUserWithoutPassword = {
+      ...userWithoutPassword,
+      _id: user.id,
+      storageConsumedCount: user.storageConsumedCount ?? 0,
+    };
 
     if (!includePassword) return baseUserWithoutPassword;
 
