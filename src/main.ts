@@ -13,7 +13,13 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   configSwagger(app);
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
-  app.enableCors({ origin: 'http://localhost:5173' });
+  app.enableCors({
+    origin: [
+      'http://localhost:5173',
+      'http://127.0.0.1:5173',
+      'https://my-files-ten.vercel.app',
+    ],
+  });
 
   await app.listen(PORT, () => {
     Logger.log(`Server running at http://localhost:${PORT}`);
