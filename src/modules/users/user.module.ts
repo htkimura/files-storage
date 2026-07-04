@@ -9,6 +9,7 @@ import {
   GetManyFilesByUserIdUseCase,
   GetUserByIdUseCase,
   LoginUseCase,
+  RecalculateStorageConsumedUseCase,
   RefreshTokenUseCase,
 } from './use-cases';
 import { UserController } from './user.controller';
@@ -21,6 +22,7 @@ const useCases = [
   RefreshTokenUseCase,
   GetUserByIdUseCase,
   GetManyFilesByUserIdUseCase,
+  RecalculateStorageConsumedUseCase,
 ];
 
 @Module({
