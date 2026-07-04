@@ -84,4 +84,20 @@ export class UserController {
   myFiles(@AuthUser('_id') userId: string, @Query() input: MyFilesDto) {
     return this.userService.getUserFiles({ userId, ...input });
   }
+
+  @Post('me/storage/recalculate')
+  @UseGuards(AuthGuard)
+  @ApiOperation({
+    operationId: 'recalculateStorageConsumed',
+    summary: 'Recalculate the authenticated user storage consumed count',
+    description:
+      'Sums the size of all completed user files and updates storageConsumedCount.',
+  })
+  @ApiResponse({
+    status: 200,
+    type: User,
+  })
+  recalculateStorageConsumed(@AuthUser('_id') userId: string) {
+    return this.userService.recalculateStorageConsumed(userId);
+  }
 }

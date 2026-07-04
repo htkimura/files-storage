@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { CreateUserDto, LoginDto, RefreshTokenDto } from './dto';
+import { UserRepository } from './user.repository';
 import {
   CreateUserUseCase,
   GetManyFilesByUserIdUseCase,
@@ -8,6 +9,7 @@ import {
   GetUserByIdUseCase,
   GetUserFilesArgs,
   LoginUseCase,
+  RecalculateStorageConsumedUseCase,
   RefreshTokenUseCase,
 } from './use-cases';
 
@@ -19,6 +21,8 @@ export class UserService {
     private readonly refreshTokenUseCase: RefreshTokenUseCase,
     private readonly getUserByIdUseCase: GetUserByIdUseCase,
     private readonly getManyFilesByUserIdUseCase: GetManyFilesByUserIdUseCase,
+    private readonly recalculateStorageConsumedUseCase: RecalculateStorageConsumedUseCase,
+    private readonly userRepository: UserRepository,
   ) {}
 
   createUser(input: CreateUserDto) {
@@ -39,5 +43,13 @@ export class UserService {
 
   getUserFiles(input: GetUserFilesArgs) {
     return this.getManyFilesByUserIdUseCase.execute(input);
+  }
+
+  adjustStorageConsumedCount(userId: string, deltaBytes: number) {
+    return this.userRepository.adjustStorageConsumedCount(userId, deltaBytes);
+  }
+
+  recalculateStorageConsumed(userId: string) {
+    return this.recalculateStorageConsumedUseCase.execute({ userId });
   }
 }
