@@ -12,6 +12,7 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Put,
   Query,
@@ -25,6 +26,7 @@ import {
   InitMultipartUploadDto,
   ListChildrenDto,
   MoveFileToFolderDto,
+  RenameFileDto,
 } from './dto';
 import {
   InitMultipartUploadOutput,
@@ -291,6 +293,29 @@ export class StorageController {
       fileId: id,
       userId: user._id,
       folderId: input.folderId ?? null,
+    });
+  }
+
+  @Patch('files/:id/rename')
+  @UseGuards(AuthGuard)
+  @ApiOperation({
+    operationId: 'renameFile',
+    summary: 'Rename a file',
+    description: 'Renames a file belonging to the authenticated user',
+  })
+  @ApiResponse({
+    status: 200,
+    type: File,
+  })
+  renameFile(
+    @Param('id') id: string,
+    @Body() input: RenameFileDto,
+    @AuthUser() user: JUser,
+  ) {
+    return this.storageService.renameFile({
+      fileId: id,
+      userId: user._id,
+      name: input.name,
     });
   }
 }

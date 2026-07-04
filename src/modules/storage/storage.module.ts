@@ -20,6 +20,7 @@ import {
   InitMultipartUploadUseCase,
   ListChildrenUseCase,
   MoveFileToFolderUseCase,
+  RenameFileUseCase,
 } from './use-cases';
 
 const useCases = [
@@ -35,6 +36,7 @@ const useCases = [
   InitMultipartUploadUseCase,
   ListChildrenUseCase,
   MoveFileToFolderUseCase,
+  RenameFileUseCase,
 ];
 
 @Module({
