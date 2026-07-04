@@ -121,4 +121,16 @@ export class FileRepository {
 
     return result._sum.size ?? 0;
   }
+
+  async sumPendingMultipartStorageByUserId(userId: string): Promise<number> {
+    const result = await this.prismaService.file.aggregate({
+      where: {
+        userId,
+        multipartUploadId: { isSet: true },
+      },
+      _sum: { size: true },
+    });
+
+    return result._sum.size ?? 0;
+  }
 }
