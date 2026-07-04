@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 
 import { CreateUserDto, LoginDto, RefreshTokenDto } from './dto';
-import { UserRepository } from './user.repository';
 import {
   CreateUserUseCase,
   GetManyFilesByUserIdUseCase,
+  GetMeUseCase,
   GetUserByIdArgs,
   GetUserByIdUseCase,
   GetUserFilesArgs,
@@ -12,6 +12,7 @@ import {
   RecalculateStorageConsumedUseCase,
   RefreshTokenUseCase,
 } from './use-cases';
+import { UserRepository } from './user.repository';
 
 @Injectable()
 export class UserService {
@@ -20,6 +21,7 @@ export class UserService {
     private readonly loginUseCase: LoginUseCase,
     private readonly refreshTokenUseCase: RefreshTokenUseCase,
     private readonly getUserByIdUseCase: GetUserByIdUseCase,
+    private readonly getMeUseCase: GetMeUseCase,
     private readonly getManyFilesByUserIdUseCase: GetManyFilesByUserIdUseCase,
     private readonly recalculateStorageConsumedUseCase: RecalculateStorageConsumedUseCase,
     private readonly userRepository: UserRepository,
@@ -39,6 +41,10 @@ export class UserService {
 
   getUserById(input: GetUserByIdArgs) {
     return this.getUserByIdUseCase.execute(input);
+  }
+
+  getMe(input: GetUserByIdArgs) {
+    return this.getMeUseCase.execute(input);
   }
 
   getUserFiles(input: GetUserFilesArgs) {

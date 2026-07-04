@@ -7,6 +7,7 @@ import { AuthService } from './services';
 import {
   CreateUserUseCase,
   GetManyFilesByUserIdUseCase,
+  GetMeUseCase,
   GetUserByIdUseCase,
   LoginUseCase,
   RecalculateStorageConsumedUseCase,
@@ -21,6 +22,7 @@ const useCases = [
   LoginUseCase,
   RefreshTokenUseCase,
   GetUserByIdUseCase,
+  GetMeUseCase,
   GetManyFilesByUserIdUseCase,
   RecalculateStorageConsumedUseCase,
 ];

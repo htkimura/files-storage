@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 
 import { CreateUserDto } from './dto';
 import { User } from './user.model';
+import { DEFAULT_USER_TIER } from './user-plan.utils';
 
 export interface UserWithPassword extends User {
   password: string;
@@ -70,17 +71,22 @@ export class UserRepository {
     return this.transformUser(user);
   }
 
-  transformUser(user: PrismaUser, includePassword?: boolean) {
+  transformUser(
+    user: PrismaUser,
+    includePassword?: boolean,
+  ): User | UserWithPassword {
     const { password, ...userWithoutPassword } = user;
+    const tier = user.tier ?? DEFAULT_USER_TIER;
 
-    const baseUserWithoutPassword = {
+    const baseUser: User = {
       ...userWithoutPassword,
       _id: user.id,
       storageConsumedCount: user.storageConsumedCount ?? 0,
+      tier,
     };
 
-    if (!includePassword) return baseUserWithoutPassword;
+    if (!includePassword) return baseUser;
 
-    return { ...baseUserWithoutPassword, password };
+    return { ...baseUser, password };
   }
 }
