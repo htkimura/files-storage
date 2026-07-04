@@ -5,7 +5,7 @@ import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 import { CreateUserDto, LoginDto, MyFilesDto, RefreshTokenDto } from './dto';
-import { User, UserLogin } from './user.model';
+import { EnrichedUser, User, UserLogin } from './user.model';
 import { UserService } from './user.service';
 
 @Controller('users')
@@ -63,10 +63,10 @@ export class UserController {
   })
   @ApiResponse({
     status: 200,
-    type: User,
+    type: EnrichedUser,
   })
   me(@AuthUser('_id') userId: string) {
-    return this.userService.getUserById({ userId });
+    return this.userService.getMe({ userId });
   }
 
   @Get('me/files')
