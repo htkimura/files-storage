@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { CreateUserDto, LoginDto, RefreshTokenDto } from './dto';
 import {
+  AssertStorageForUploadUseCase,
   CreateUserUseCase,
   GetManyFilesByUserIdUseCase,
   GetMeUseCase,
@@ -24,6 +25,7 @@ export class UserService {
     private readonly getMeUseCase: GetMeUseCase,
     private readonly getManyFilesByUserIdUseCase: GetManyFilesByUserIdUseCase,
     private readonly recalculateStorageConsumedUseCase: RecalculateStorageConsumedUseCase,
+    private readonly assertStorageForUploadUseCase: AssertStorageForUploadUseCase,
     private readonly userRepository: UserRepository,
   ) {}
 
@@ -53,6 +55,13 @@ export class UserService {
 
   adjustStorageConsumedCount(userId: string, deltaBytes: number) {
     return this.userRepository.adjustStorageConsumedCount(userId, deltaBytes);
+  }
+
+  assertStorageForUpload(userId: string, additionalBytes: number) {
+    return this.assertStorageForUploadUseCase.execute({
+      userId,
+      additionalBytes,
+    });
   }
 
   recalculateStorageConsumed(userId: string) {

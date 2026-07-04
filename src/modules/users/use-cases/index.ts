@@ -1,3 +1,4 @@
+export * from './assert-storage-for-upload.use-case';
 export * from './create-user.use-case';
 export * from './get-many-files-by-user-id.use-case';
 export * from './get-me.use-case';

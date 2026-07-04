@@ -5,6 +5,7 @@ import { Module } from '@nestjs/common';
 
 import { AuthService } from './services';
 import {
+  AssertStorageForUploadUseCase,
   CreateUserUseCase,
   GetManyFilesByUserIdUseCase,
   GetMeUseCase,
@@ -18,6 +19,7 @@ import { UserRepository } from './user.repository';
 import { UserService } from './user.service';
 
 const useCases = [
+  AssertStorageForUploadUseCase,
   CreateUserUseCase,
   LoginUseCase,
   RefreshTokenUseCase,
