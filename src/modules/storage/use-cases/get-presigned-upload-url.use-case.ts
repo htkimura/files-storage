@@ -36,6 +36,8 @@ export class GetPresignedUploadUrlUseCase {
       id,
     });
 
+    await this.userService.adjustStorageConsumedCount(userId, fileInput.size);
+
     return { file: uploadedFile, presignedUploadUrl };
   }
 }

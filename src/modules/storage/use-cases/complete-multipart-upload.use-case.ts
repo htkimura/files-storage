@@ -1,5 +1,6 @@
 import { BullMQJob, BullMQQueue } from '@common/enums';
 import { FileService } from '@modules/files';
+import { UserService } from '@modules/users/user.service';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Queue } from 'bullmq';
@@ -31,6 +32,7 @@ export class CompleteMultipartUploadUseCase {
   constructor(
     private readonly fileService: FileService,
     private readonly r2Service: R2Service,
+    private readonly userService: UserService,
     @InjectQueue(BullMQQueue.THUMBNAIL_QUEUE)
     private readonly thumbnailQueue: Queue,
   ) {}
@@ -67,6 +69,8 @@ export class CompleteMultipartUploadUseCase {
     );
 
     await this.fileService.update(fileId, { multipartUploadId: null });
+
+    await this.userService.adjustStorageConsumedCount(userId, file.size);
 
     await this.thumbnailQueue.add(BullMQJob.IMAGE_THUMBNAIL_JOB, {
       fileId,

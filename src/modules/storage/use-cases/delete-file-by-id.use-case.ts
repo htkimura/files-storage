@@ -1,4 +1,4 @@
-import { FileService } from '@modules/files';
+import { FileService, isStorageCountedFile } from '@modules/files';
 import { UserService } from '@modules/users/user.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
 
@@ -29,6 +29,10 @@ export class DeleteFileByIdUseCase {
     await this.r2Service.deleteFile(file.path);
 
     await this.fileService.deleteById(fileId);
+
+    if (isStorageCountedFile(file)) {
+      await this.userService.adjustStorageConsumedCount(userId, -file.size);
+    }
 
     if (!file.thumbnailPath) return true;
 

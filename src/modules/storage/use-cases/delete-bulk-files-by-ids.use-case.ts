@@ -1,5 +1,5 @@
 import { mapByKey } from '@common/utils';
-import { FileService } from '@modules/files';
+import { FileService, isStorageCountedFile } from '@modules/files';
 import { DeleteBulkFilesOutput } from '@modules/files/models/delete-bulk-files.model';
 import { UserService } from '@modules/users/user.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
@@ -52,6 +52,21 @@ export class DeleteBulkFilesByIdsUseCase {
         deletableFiles.map((file) => file.thumbnailPath).filter(Boolean),
       ),
     ]);
+
+    const deletedStorageBytes = deletedKeys.reduce((total, key) => {
+      const file = filesByPath[key];
+
+      if (!file || !isStorageCountedFile(file)) return total;
+
+      return total + file.size;
+    }, 0);
+
+    if (deletedStorageBytes > 0) {
+      await this.userService.adjustStorageConsumedCount(
+        userId,
+        -deletedStorageBytes,
+      );
+    }
 
     const deleteFilesIds = deletedKeys?.map((key) => filesByPath[key].id) || [];
 
