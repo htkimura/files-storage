@@ -109,4 +109,16 @@ export class FileRepository {
       where: { path: { in: paths } },
     });
   }
+
+  async sumCompletedStorageByUserId(userId: string): Promise<number> {
+    const result = await this.prismaService.file.aggregate({
+      where: {
+        userId,
+        multipartUploadId: { isSet: false },
+      },
+      _sum: { size: true },
+    });
+
+    return result._sum.size ?? 0;
+  }
 }
