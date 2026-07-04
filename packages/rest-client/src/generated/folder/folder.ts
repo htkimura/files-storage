@@ -5,7 +5,10 @@
  * This API is for storing files for different users
  * OpenAPI spec version: 1.0
  */
-import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQuery
+} from '@tanstack/react-query'
 import type {
   MutationFunction,
   QueryFunction,
@@ -13,402 +16,331 @@ import type {
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
-} from '@tanstack/react-query';
-import axios from 'axios';
-import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+  UseQueryResult
+} from '@tanstack/react-query'
+import axios from 'axios'
+import type {
+  AxiosError,
+  AxiosRequestConfig,
+  AxiosResponse
+} from 'axios'
 import type {
   CreateFolderDto,
   Folder,
   ListMyFoldersParams,
   RenameFolderDto,
-  UpdateParentFolderDto,
-} from '.././model';
+  UpdateParentFolderDto
+} from '.././model'
+
+
 
 /**
  * Returns folders for the authenticated user. Omit parentFolderId to return all folders, pass null for root-level folders only, or pass a folder ID to return direct child folders.
  * @summary List all folders
  */
 export const listMyFolders = (
-  params?: ListMyFoldersParams,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<Folder[]>> => {
-  return axios.get(`/folders`, {
+    params?: ListMyFoldersParams, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<Folder[]>> => {
+    
+    
+    return axios.get(
+      `/folders`,{
     ...options,
-    params: { ...params, ...options?.params },
-  });
-};
+        params: {...params, ...options?.params},}
+    );
+  }
 
-export const getListMyFoldersQueryKey = (params?: ListMyFoldersParams) => {
-  return [`/folders`, ...(params ? [params] : [])] as const;
-};
 
-export const getListMyFoldersQueryOptions = <
-  TData = Awaited<ReturnType<typeof listMyFolders>>,
-  TError = AxiosError<unknown>,
->(
-  params?: ListMyFoldersParams,
-  options?: {
-    query?: UseQueryOptions<
-      Awaited<ReturnType<typeof listMyFolders>>,
-      TError,
-      TData
-    >;
-    axios?: AxiosRequestConfig;
-  },
+export const getListMyFoldersQueryKey = (params?: ListMyFoldersParams,) => {
+    return [`/folders`, ...(params ? [params]: [])] as const;
+    }
+
+    
+export const getListMyFoldersQueryOptions = <TData = Awaited<ReturnType<typeof listMyFolders>>, TError = AxiosError<unknown>>(params?: ListMyFoldersParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listMyFolders>>, TError, TData>, axios?: AxiosRequestConfig}
 ) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getListMyFoldersQueryKey(params);
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof listMyFolders>>> = ({
-    signal,
-  }) => listMyFolders(params, { signal, ...axiosOptions });
+  const queryKey =  queryOptions?.queryKey ?? getListMyFoldersQueryKey(params);
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof listMyFolders>>,
-    TError,
-    TData
-  > & { queryKey: QueryKey };
-};
+  
 
-export type ListMyFoldersQueryResult = NonNullable<
-  Awaited<ReturnType<typeof listMyFolders>>
->;
-export type ListMyFoldersQueryError = AxiosError<unknown>;
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listMyFolders>>> = ({ signal }) => listMyFolders(params, { signal, ...axiosOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listMyFolders>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListMyFoldersQueryResult = NonNullable<Awaited<ReturnType<typeof listMyFolders>>>
+export type ListMyFoldersQueryError = AxiosError<unknown>
+
 
 /**
  * @summary List all folders
  */
 
-export function useListMyFolders<
-  TData = Awaited<ReturnType<typeof listMyFolders>>,
-  TError = AxiosError<unknown>,
->(
-  params?: ListMyFoldersParams,
-  options?: {
-    query?: UseQueryOptions<
-      Awaited<ReturnType<typeof listMyFolders>>,
-      TError,
-      TData
-    >;
-    axios?: AxiosRequestConfig;
-  },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getListMyFoldersQueryOptions(params, options);
+export function useListMyFolders<TData = Awaited<ReturnType<typeof listMyFolders>>, TError = AxiosError<unknown>>(
+ params?: ListMyFoldersParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listMyFolders>>, TError, TData>, axios?: AxiosRequestConfig}
 
-  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
-    queryKey: QueryKey;
-  };
+  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  query.queryKey = queryOptions.queryKey;
+  const queryOptions = getListMyFoldersQueryOptions(params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey ;
 
   return query;
 }
+
+
 
 /**
  * Creates a new folder for the authenticated user. Optionally, can specify a parent folder to create it inside.
  * @summary Create a new folder
  */
 export const createFolder = (
-  createFolderDto: CreateFolderDto,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<Folder>> => {
-  return axios.post(`/folders`, createFolderDto, options);
-};
+    createFolderDto: CreateFolderDto, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<Folder>> => {
+    
+    
+    return axios.post(
+      `/folders`,
+      createFolderDto,options
+    );
+  }
 
-export const getCreateFolderMutationOptions = <
-  TData = Awaited<ReturnType<typeof createFolder>>,
-  TError = AxiosError<unknown>,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    TData,
-    TError,
-    { data: CreateFolderDto },
-    TContext
-  >;
-  axios?: AxiosRequestConfig;
-}) => {
-  const mutationKey = ['createFolder'];
-  const { mutation: mutationOptions, axios: axiosOptions } = options
-    ? options.mutation &&
-      'mutationKey' in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, axios: undefined };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof createFolder>>,
-    { data: CreateFolderDto }
-  > = (props) => {
-    const { data } = props ?? {};
 
-    return createFolder(data, axiosOptions);
-  };
+export const getCreateFolderMutationOptions = <TData = Awaited<ReturnType<typeof createFolder>>, TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{data: CreateFolderDto}, TContext>, axios?: AxiosRequestConfig}
+) => {
+const mutationKey = ['createFolder'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, axios: undefined};
 
-  return { mutationFn, ...mutationOptions } as UseMutationOptions<
-    TData,
-    TError,
-    { data: CreateFolderDto },
-    TContext
-  >;
-};
+      
 
-export type CreateFolderMutationResult = NonNullable<
-  Awaited<ReturnType<typeof createFolder>>
->;
-export type CreateFolderMutationBody = CreateFolderDto;
-export type CreateFolderMutationError = AxiosError<unknown>;
 
-/**
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createFolder>>, {data: CreateFolderDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createFolder(data,axiosOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions } as UseMutationOptions<TData, TError,{data: CreateFolderDto}, TContext>}
+
+    export type CreateFolderMutationResult = NonNullable<Awaited<ReturnType<typeof createFolder>>>
+    export type CreateFolderMutationBody = CreateFolderDto
+    export type CreateFolderMutationError = AxiosError<unknown>
+
+    /**
  * @summary Create a new folder
  */
-export const useCreateFolder = <
-  TData = Awaited<ReturnType<typeof createFolder>>,
-  TError = AxiosError<unknown>,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    TData,
-    TError,
-    { data: CreateFolderDto },
-    TContext
-  >;
-  axios?: AxiosRequestConfig;
-}): UseMutationResult<TData, TError, { data: CreateFolderDto }, TContext> => {
-  const mutationOptions = getCreateFolderMutationOptions(options);
+export const useCreateFolder = <TData = Awaited<ReturnType<typeof createFolder>>, TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{data: CreateFolderDto}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationResult<
+        TData,
+        TError,
+        {data: CreateFolderDto},
+        TContext
+      > => {
 
-  return useMutation(mutationOptions);
-};
-/**
+      const mutationOptions = getCreateFolderMutationOptions(options);
+
+      return useMutation(mutationOptions);
+    }
+    /**
  * Renames a folder belonging to the authenticated user
  * @summary Rename a folder
  */
 export const renameFolder = (
-  id: string,
-  renameFolderDto: RenameFolderDto,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<Folder>> => {
-  return axios.patch(`/folders/${id}/rename`, renameFolderDto, options);
-};
+    id: string,
+    renameFolderDto: RenameFolderDto, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<Folder>> => {
+    
+    
+    return axios.patch(
+      `/folders/${id}/rename`,
+      renameFolderDto,options
+    );
+  }
 
-export const getRenameFolderMutationOptions = <
-  TData = Awaited<ReturnType<typeof renameFolder>>,
-  TError = AxiosError<unknown>,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    TData,
-    TError,
-    { id: string; data: RenameFolderDto },
-    TContext
-  >;
-  axios?: AxiosRequestConfig;
-}) => {
-  const mutationKey = ['renameFolder'];
-  const { mutation: mutationOptions, axios: axiosOptions } = options
-    ? options.mutation &&
-      'mutationKey' in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, axios: undefined };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof renameFolder>>,
-    { id: string; data: RenameFolderDto }
-  > = (props) => {
-    const { id, data } = props ?? {};
 
-    return renameFolder(id, data, axiosOptions);
-  };
+export const getRenameFolderMutationOptions = <TData = Awaited<ReturnType<typeof renameFolder>>, TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{id: string;data: RenameFolderDto}, TContext>, axios?: AxiosRequestConfig}
+) => {
+const mutationKey = ['renameFolder'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, axios: undefined};
 
-  return { mutationFn, ...mutationOptions } as UseMutationOptions<
-    TData,
-    TError,
-    { id: string; data: RenameFolderDto },
-    TContext
-  >;
-};
+      
 
-export type RenameFolderMutationResult = NonNullable<
-  Awaited<ReturnType<typeof renameFolder>>
->;
-export type RenameFolderMutationBody = RenameFolderDto;
-export type RenameFolderMutationError = AxiosError<unknown>;
 
-/**
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof renameFolder>>, {id: string;data: RenameFolderDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  renameFolder(id,data,axiosOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions } as UseMutationOptions<TData, TError,{id: string;data: RenameFolderDto}, TContext>}
+
+    export type RenameFolderMutationResult = NonNullable<Awaited<ReturnType<typeof renameFolder>>>
+    export type RenameFolderMutationBody = RenameFolderDto
+    export type RenameFolderMutationError = AxiosError<unknown>
+
+    /**
  * @summary Rename a folder
  */
-export const useRenameFolder = <
-  TData = Awaited<ReturnType<typeof renameFolder>>,
-  TError = AxiosError<unknown>,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    TData,
-    TError,
-    { id: string; data: RenameFolderDto },
-    TContext
-  >;
-  axios?: AxiosRequestConfig;
-}): UseMutationResult<
-  TData,
-  TError,
-  { id: string; data: RenameFolderDto },
-  TContext
-> => {
-  const mutationOptions = getRenameFolderMutationOptions(options);
+export const useRenameFolder = <TData = Awaited<ReturnType<typeof renameFolder>>, TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{id: string;data: RenameFolderDto}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationResult<
+        TData,
+        TError,
+        {id: string;data: RenameFolderDto},
+        TContext
+      > => {
 
-  return useMutation(mutationOptions);
-};
-/**
+      const mutationOptions = getRenameFolderMutationOptions(options);
+
+      return useMutation(mutationOptions);
+    }
+    /**
  * Moves a folder to another folder or removes it from its parent folder. Set parentFolderId to null to remove from parent folder.
  * @summary Update folder parent
  */
 export const updateParentFolder = (
-  id: string,
-  updateParentFolderDto: UpdateParentFolderDto,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<Folder>> => {
-  return axios.put(`/folders/${id}/parent`, updateParentFolderDto, options);
-};
+    id: string,
+    updateParentFolderDto: UpdateParentFolderDto, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<Folder>> => {
+    
+    
+    return axios.put(
+      `/folders/${id}/parent`,
+      updateParentFolderDto,options
+    );
+  }
 
-export const getUpdateParentFolderMutationOptions = <
-  TData = Awaited<ReturnType<typeof updateParentFolder>>,
-  TError = AxiosError<unknown>,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    TData,
-    TError,
-    { id: string; data: UpdateParentFolderDto },
-    TContext
-  >;
-  axios?: AxiosRequestConfig;
-}) => {
-  const mutationKey = ['updateParentFolder'];
-  const { mutation: mutationOptions, axios: axiosOptions } = options
-    ? options.mutation &&
-      'mutationKey' in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, axios: undefined };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof updateParentFolder>>,
-    { id: string; data: UpdateParentFolderDto }
-  > = (props) => {
-    const { id, data } = props ?? {};
 
-    return updateParentFolder(id, data, axiosOptions);
-  };
+export const getUpdateParentFolderMutationOptions = <TData = Awaited<ReturnType<typeof updateParentFolder>>, TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{id: string;data: UpdateParentFolderDto}, TContext>, axios?: AxiosRequestConfig}
+) => {
+const mutationKey = ['updateParentFolder'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, axios: undefined};
 
-  return { mutationFn, ...mutationOptions } as UseMutationOptions<
-    TData,
-    TError,
-    { id: string; data: UpdateParentFolderDto },
-    TContext
-  >;
-};
+      
 
-export type UpdateParentFolderMutationResult = NonNullable<
-  Awaited<ReturnType<typeof updateParentFolder>>
->;
-export type UpdateParentFolderMutationBody = UpdateParentFolderDto;
-export type UpdateParentFolderMutationError = AxiosError<unknown>;
 
-/**
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateParentFolder>>, {id: string;data: UpdateParentFolderDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateParentFolder(id,data,axiosOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions } as UseMutationOptions<TData, TError,{id: string;data: UpdateParentFolderDto}, TContext>}
+
+    export type UpdateParentFolderMutationResult = NonNullable<Awaited<ReturnType<typeof updateParentFolder>>>
+    export type UpdateParentFolderMutationBody = UpdateParentFolderDto
+    export type UpdateParentFolderMutationError = AxiosError<unknown>
+
+    /**
  * @summary Update folder parent
  */
-export const useUpdateParentFolder = <
-  TData = Awaited<ReturnType<typeof updateParentFolder>>,
-  TError = AxiosError<unknown>,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    TData,
-    TError,
-    { id: string; data: UpdateParentFolderDto },
-    TContext
-  >;
-  axios?: AxiosRequestConfig;
-}): UseMutationResult<
-  TData,
-  TError,
-  { id: string; data: UpdateParentFolderDto },
-  TContext
-> => {
-  const mutationOptions = getUpdateParentFolderMutationOptions(options);
+export const useUpdateParentFolder = <TData = Awaited<ReturnType<typeof updateParentFolder>>, TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{id: string;data: UpdateParentFolderDto}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationResult<
+        TData,
+        TError,
+        {id: string;data: UpdateParentFolderDto},
+        TContext
+      > => {
 
-  return useMutation(mutationOptions);
-};
-/**
+      const mutationOptions = getUpdateParentFolderMutationOptions(options);
+
+      return useMutation(mutationOptions);
+    }
+    /**
  * Deletes a folder belonging to the authenticated user
  * @summary Delete a folder
  */
 export const deleteFolder = (
-  id: string,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<boolean>> => {
-  return axios.delete(`/folders/${id}`, options);
-};
+    id: string, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<boolean>> => {
+    
+    
+    return axios.delete(
+      `/folders/${id}`,options
+    );
+  }
 
-export const getDeleteFolderMutationOptions = <
-  TData = Awaited<ReturnType<typeof deleteFolder>>,
-  TError = AxiosError<unknown>,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<TData, TError, { id: string }, TContext>;
-  axios?: AxiosRequestConfig;
-}) => {
-  const mutationKey = ['deleteFolder'];
-  const { mutation: mutationOptions, axios: axiosOptions } = options
-    ? options.mutation &&
-      'mutationKey' in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, axios: undefined };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof deleteFolder>>,
-    { id: string }
-  > = (props) => {
-    const { id } = props ?? {};
 
-    return deleteFolder(id, axiosOptions);
-  };
+export const getDeleteFolderMutationOptions = <TData = Awaited<ReturnType<typeof deleteFolder>>, TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{id: string}, TContext>, axios?: AxiosRequestConfig}
+) => {
+const mutationKey = ['deleteFolder'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, axios: undefined};
 
-  return { mutationFn, ...mutationOptions } as UseMutationOptions<
-    TData,
-    TError,
-    { id: string },
-    TContext
-  >;
-};
+      
 
-export type DeleteFolderMutationResult = NonNullable<
-  Awaited<ReturnType<typeof deleteFolder>>
->;
 
-export type DeleteFolderMutationError = AxiosError<unknown>;
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteFolder>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
 
-/**
+          return  deleteFolder(id,axiosOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions } as UseMutationOptions<TData, TError,{id: string}, TContext>}
+
+    export type DeleteFolderMutationResult = NonNullable<Awaited<ReturnType<typeof deleteFolder>>>
+    
+    export type DeleteFolderMutationError = AxiosError<unknown>
+
+    /**
  * @summary Delete a folder
  */
-export const useDeleteFolder = <
-  TData = Awaited<ReturnType<typeof deleteFolder>>,
-  TError = AxiosError<unknown>,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<TData, TError, { id: string }, TContext>;
-  axios?: AxiosRequestConfig;
-}): UseMutationResult<TData, TError, { id: string }, TContext> => {
-  const mutationOptions = getDeleteFolderMutationOptions(options);
+export const useDeleteFolder = <TData = Awaited<ReturnType<typeof deleteFolder>>, TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{id: string}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationResult<
+        TData,
+        TError,
+        {id: string},
+        TContext
+      > => {
 
-  return useMutation(mutationOptions);
-};
+      const mutationOptions = getDeleteFolderMutationOptions(options);
+
+      return useMutation(mutationOptions);
+    }
+    

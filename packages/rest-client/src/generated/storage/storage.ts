@@ -40,6 +40,7 @@ import type {
   ListChildrenParams,
   MoveFileToFolderDto,
   MultipartPartUrlOutput,
+  RenameFileDto,
   UploadFileOutput
 } from '.././model'
 
@@ -787,6 +788,68 @@ export const useMoveFileToFolder = <TData = Awaited<ReturnType<typeof moveFileTo
       > => {
 
       const mutationOptions = getMoveFileToFolderMutationOptions(options);
+
+      return useMutation(mutationOptions);
+    }
+    /**
+ * Renames a file belonging to the authenticated user
+ * @summary Rename a file
+ */
+export const renameFile = (
+    id: string,
+    renameFileDto: RenameFileDto, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<File>> => {
+    
+    
+    return axios.patch(
+      `/files/${id}/rename`,
+      renameFileDto,options
+    );
+  }
+
+
+
+export const getRenameFileMutationOptions = <TData = Awaited<ReturnType<typeof renameFile>>, TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{id: string;data: RenameFileDto}, TContext>, axios?: AxiosRequestConfig}
+) => {
+const mutationKey = ['renameFile'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, axios: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof renameFile>>, {id: string;data: RenameFileDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  renameFile(id,data,axiosOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions } as UseMutationOptions<TData, TError,{id: string;data: RenameFileDto}, TContext>}
+
+    export type RenameFileMutationResult = NonNullable<Awaited<ReturnType<typeof renameFile>>>
+    export type RenameFileMutationBody = RenameFileDto
+    export type RenameFileMutationError = AxiosError<unknown>
+
+    /**
+ * @summary Rename a file
+ */
+export const useRenameFile = <TData = Awaited<ReturnType<typeof renameFile>>, TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{id: string;data: RenameFileDto}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationResult<
+        TData,
+        TError,
+        {id: string;data: RenameFileDto},
+        TContext
+      > => {
+
+      const mutationOptions = getRenameFileMutationOptions(options);
 
       return useMutation(mutationOptions);
     }

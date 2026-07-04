@@ -7,8 +7,8 @@
  */
 
 export type ListMyFoldersParams = {
-  /**
-   * Filter by parent folder. Omit to return all folders. Pass null for root-level folders only.
-   */
-  parentFolderId?: string | null;
+/**
+ * Filter by parent folder. Omit to return all folders. Pass null for root-level folders only.
+ */
+parentFolderId?: string | null;
 };

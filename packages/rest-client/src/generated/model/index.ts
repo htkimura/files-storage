@@ -33,6 +33,7 @@ export * from './multipartPartUrlOutput';
 export * from './multipartUploadedPartDto';
 export * from './myFilesParams';
 export * from './refreshTokenDto';
+export * from './renameFileDto';
 export * from './renameFolderDto';
 export * from './updateParentFolderDto';
 export * from './uploadFileOutput';
