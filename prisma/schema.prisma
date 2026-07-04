@@ -12,6 +12,7 @@ model User {
   email String @unique
   password String
   refreshToken String? @map("refresh_token")
+  storageConsumedCount Int @default(0) @map("storage_consumed_count")
 
   files File[]
   folders Folder[]

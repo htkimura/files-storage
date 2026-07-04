@@ -13,6 +13,11 @@ export class User {
 
   @ApiProperty()
   refreshToken: string;
+
+  @ApiProperty({
+    description: 'Total bytes consumed by completed user files',
+  })
+  storageConsumedCount: number;
 }
 
 export class UserLogin {
