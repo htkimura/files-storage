@@ -126,7 +126,10 @@ export class FileRepository {
     const result = await this.prismaService.file.aggregate({
       where: {
         userId,
-        multipartUploadId: { isSet: true },
+        AND: [
+          { multipartUploadId: { not: null } },
+          { multipartUploadId: { not: '' } },
+        ],
       },
       _sum: { size: true },
     });
