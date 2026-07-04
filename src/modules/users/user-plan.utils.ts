@@ -11,7 +11,7 @@ export interface PlanDetails {
 }
 
 export const planDetailsMap: Record<UserTier, PlanDetails> = {
-  [USER_TIER.FREE]: { storageLimit: 5_000_000_000 },
+  [USER_TIER.FREE]: { storageLimit: 5_368_709_120 },
 };
 
 export function getPlanDetails(tier: string): PlanDetails {
