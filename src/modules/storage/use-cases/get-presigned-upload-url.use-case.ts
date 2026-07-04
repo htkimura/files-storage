@@ -1,7 +1,7 @@
 import { FileService } from '@modules/files';
 import { UploadFileOutput } from '@modules/files/models';
 import { UserService } from '@modules/users/user.service';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { R2Service } from '../r2.service';
 
@@ -22,9 +22,7 @@ export class GetPresignedUploadUrlUseCase {
     userId,
     fileInput,
   }: GetPresignedUploadUrlArgs): Promise<UploadFileOutput> {
-    const foundUser = await this.userService.getUserById({ userId });
-
-    if (!foundUser) throw new NotFoundException('User not found');
+    await this.userService.assertStorageForUpload(userId, fileInput.size);
 
     const { id, key, presignedUploadUrl } =
       await this.r2Service.createPresignedUpload(userId, fileInput);

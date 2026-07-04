@@ -57,6 +57,8 @@ export class CompleteMultipartUploadUseCase {
       );
     }
 
+    await this.userService.assertStorageForUpload(userId, 0);
+
     const normalizedParts = parts.map((p) => ({
       PartNumber: p.partNumber,
       ETag: normalizePartEtag(p.etag),

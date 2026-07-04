@@ -1,6 +1,6 @@
 import { FileService } from '@modules/files';
 import { UserService } from '@modules/users/user.service';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { InitMultipartUploadOutput } from '../models';
 import { R2Service } from '../r2.service';
@@ -22,9 +22,7 @@ export class InitMultipartUploadUseCase {
     userId,
     fileInput,
   }: InitMultipartUploadArgs): Promise<InitMultipartUploadOutput> {
-    const foundUser = await this.userService.getUserById({ userId });
-
-    if (!foundUser) throw new NotFoundException('User not found');
+    await this.userService.assertStorageForUpload(userId, fileInput.size);
 
     const { id, key, uploadId } = await this.r2Service.createMultipartUpload(
       userId,
