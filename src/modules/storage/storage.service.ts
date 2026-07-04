@@ -27,6 +27,8 @@ import {
   ListChildrenUseCase,
   MoveFileToFolderArgs,
   MoveFileToFolderUseCase,
+  RenameFileArgs,
+  RenameFileUseCase,
 } from './use-cases';
 
 @Injectable()
@@ -45,6 +47,7 @@ export class StorageService extends R2Service {
     private readonly createImageThumbnailUseCase: CreateImageThumbnailUseCase,
     private readonly listChildrenUseCase: ListChildrenUseCase,
     private readonly moveFileToFolderUseCase: MoveFileToFolderUseCase,
+    private readonly renameFileUseCase: RenameFileUseCase,
   ) {
     super(fileService);
   }
@@ -95,5 +98,9 @@ export class StorageService extends R2Service {
 
   async moveFileToFolder(input: MoveFileToFolderArgs) {
     return this.moveFileToFolderUseCase.execute(input);
+  }
+
+  async renameFile(input: RenameFileArgs) {
+    return this.renameFileUseCase.execute(input);
   }
 }

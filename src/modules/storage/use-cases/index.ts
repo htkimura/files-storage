@@ -10,3 +10,4 @@ export * from './get-presigned-upload-url.use-case';
 export * from './init-multipart-upload.use-case';
 export * from './list-children.use-case';
 export * from './move-file-to-folder.use-case';
+export * from './rename-file.use-case';
