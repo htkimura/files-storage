@@ -5,11 +5,8 @@ import { UserService } from '@modules/users/user.service';
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 
 import {
-  bufferToWebpThumbnail,
-  errMessage,
-  heicBufferToJpeg,
-  isHeifDecodeUnsupported,
-  isLikelyHeic,
+  createWebpThumbnailBuffer,
+  thumbnailPathFromOriginal,
 } from '../helpers';
 import { R2Service } from '../r2.service';
 
@@ -45,55 +42,34 @@ export class CreateImageThumbnailUseCase {
 
     const contentType = original.ContentType ?? undefined;
 
-    const heicLikely = isLikelyHeic(contentType, file.path, originalBuffer);
-    let thumbnail: Buffer;
+    const thumbnailResult = await createWebpThumbnailBuffer(
+      originalBuffer,
+      contentType,
+      file.path,
+    );
 
-    try {
-      if (heicLikely) {
-        const jpegBuffer = await heicBufferToJpeg(originalBuffer);
-        thumbnail = await bufferToWebpThumbnail(jpegBuffer);
-      } else {
-        thumbnail = await bufferToWebpThumbnail(originalBuffer);
-      }
-    } catch (err) {
-      if (heicLikely) {
-        this.logger.warn(
-          `Thumbnail skipped for file ${fileId} (HEIC pipeline): ${errMessage(err)}`,
-        );
-        return file;
-      }
-      if (isHeifDecodeUnsupported(err)) {
-        try {
-          const jpegBuffer = await heicBufferToJpeg(originalBuffer);
-          thumbnail = await bufferToWebpThumbnail(jpegBuffer);
-        } catch (err2) {
-          this.logger.warn(
-            `Thumbnail skipped for file ${fileId}: ${errMessage(err2)}`,
-          );
-          return file;
-        }
-      } else {
-        throw err;
-      }
+    if (thumbnailResult.kind === 'skipped') {
+      this.logger.warn(
+        `Thumbnail skipped for file ${fileId}: ${thumbnailResult.reason}`,
+      );
+
+      return file;
     }
 
-    const nameSegments = file.path.split('/').pop()?.split('.') ?? [];
-    if (nameSegments.length < 2) {
+    const thumbnailPath = thumbnailPathFromOriginal(file.path);
+
+    if (!thumbnailPath) {
       this.logger.warn(
         `Thumbnail skipped for file ${fileId}: path has no extension`,
       );
       return file;
     }
-    const stemParts = nameSegments.slice(0, -1);
-    const newFileName = [...stemParts, 'webp'].join('.');
 
-    const thumbnailPathSplit = file.path
-      .replace('originals', 'thumbnails')
-      .split('/');
-    thumbnailPathSplit.pop();
-    const thumbnailPath = [...thumbnailPathSplit, newFileName].join('/');
-
-    await this.r2Service.putObject(thumbnailPath, thumbnail, 'image/webp');
+    await this.r2Service.putObject(
+      thumbnailPath,
+      thumbnailResult.buffer,
+      'image/webp',
+    );
 
     return this.fileService.update(fileId, { thumbnailPath });
   }
