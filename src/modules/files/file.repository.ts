@@ -10,7 +10,11 @@ interface CreateFileInput
 }
 
 interface UpdateFileInput
-  extends Partial<Omit<File, 'id' | 'createdAt' | 'updatedAt'>> {}
+  extends Partial<
+    Omit<File, 'id' | 'createdAt' | 'updatedAt' | 'multipartUploadId'>
+  > {
+  multipartUploadId?: string | { unset: true };
+}
 
 interface GetManyByUserId {
   userId: string;
@@ -126,10 +130,7 @@ export class FileRepository {
     const result = await this.prismaService.file.aggregate({
       where: {
         userId,
-        AND: [
-          { multipartUploadId: { not: null } },
-          { multipartUploadId: { not: '' } },
-        ],
+        multipartUploadId: { isSet: true },
       },
       _sum: { size: true },
     });

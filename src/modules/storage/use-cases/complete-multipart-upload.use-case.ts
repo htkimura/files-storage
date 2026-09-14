@@ -70,7 +70,9 @@ export class CompleteMultipartUploadUseCase {
       normalizedParts,
     );
 
-    await this.fileService.update(fileId, { multipartUploadId: null });
+    await this.fileService.update(fileId, {
+      multipartUploadId: { unset: true },
+    });
 
     await this.userService.adjustStorageConsumedCount(userId, file.size);
 
