@@ -21,7 +21,9 @@
     "lint-rest-client": "eslint \"{rest-client}/**/*.ts\" --fix",
     "generate-rest-client": "orval --clean",
     "clear-incomplete-multipart": "ts-node --transpile-only -r dotenv/config scripts/clear-incomplete-multipart-uploads.ts",
-    "clear-incomplete-multipart:dry-run": "ts-node --transpile-only -r dotenv/config scripts/clear-incomplete-multipart-uploads.ts --dry-run"
+    "clear-incomplete-multipart:dry-run": "ts-node --transpile-only -r dotenv/config scripts/clear-incomplete-multipart-uploads.ts --dry-run",
+    "generate-missing-thumbnails": "ts-node --transpile-only -r dotenv/config scripts/generate-missing-thumbnails.ts",
+    "generate-missing-thumbnails:dry-run": "ts-node --transpile-only -r dotenv/config scripts/generate-missing-thumbnails.ts --dry-run"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.665.0",
