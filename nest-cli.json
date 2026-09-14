@@ -6,6 +6,8 @@
     "deleteOutDir": true
   },
   "ignorePaths": [
-    "packages/rest-client"
+    "packages/rest-client",
+    "scripts",
+    "orval.config.ts"
   ]
 }
