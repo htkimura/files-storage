@@ -1,3 +1,5 @@
+import * as sharp from 'sharp';
+
 import {
   createWebpThumbnailBuffer,
   isThumbnailCandidate,
@@ -73,5 +75,36 @@ describe('createWebpThumbnailBuffer', () => {
 
     expect(result.buffer.subarray(0, 4).toString()).toBe('RIFF');
     expect(result.buffer.includes(Buffer.from('WEBP'))).toBe(true);
+  });
+
+  it('should apply EXIF orientation so portrait photos are upright', async () => {
+    const jpeg = await sharp({
+      create: {
+        width: 100,
+        height: 200,
+        channels: 3,
+        background: { r: 255, g: 0, b: 0 },
+      },
+    })
+      .jpeg()
+      .withMetadata({ orientation: 6 })
+      .toBuffer();
+
+    const result = await createWebpThumbnailBuffer(
+      jpeg,
+      'image/jpeg',
+      'uploads/u/2024/1/originals/portrait.jpg',
+    );
+
+    expect(result.kind).toBe('created');
+
+    if (result.kind !== 'created') {
+      return;
+    }
+
+    const meta = await sharp(result.buffer).metadata();
+
+    expect(meta.width).toBe(300);
+    expect(meta.height).toBe(150);
   });
 });

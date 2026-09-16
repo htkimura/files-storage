@@ -65,7 +65,7 @@ export async function heicBufferToJpeg(buf: Buffer): Promise<Buffer> {
 }
 
 export function bufferToWebpThumbnail(input: Buffer): Promise<Buffer> {
-  return sharp(input).resize(300).webp({ quality: 60 }).toBuffer();
+  return sharp(input).rotate().resize(300).webp({ quality: 60 }).toBuffer();
 }
 
 export function isThumbnailCandidate(file: {
