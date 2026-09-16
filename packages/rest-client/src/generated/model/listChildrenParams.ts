@@ -5,9 +5,13 @@
  * This API is for storing files for different users
  * OpenAPI spec version: 1.0
  */
+import type { FileSortField } from './fileSortField';
+import type { SortDirection } from './sortDirection';
 
 export type ListChildrenParams = {
 page?: number;
 size?: number;
 parentFolderId?: string;
+sortBy?: FileSortField;
+sortOrder?: SortDirection;
 };

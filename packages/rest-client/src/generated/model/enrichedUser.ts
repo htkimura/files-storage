@@ -5,9 +5,10 @@
  * This API is for storing files for different users
  * OpenAPI spec version: 1.0
  */
-import type { UserTier } from './userTier';
+import type { EnrichedUserTier } from './enrichedUserTier';
+import type { PlanDetails } from './planDetails';
 
-export interface User {
+export interface EnrichedUser {
   id: string;
   _id: string;
   email: string;
@@ -15,5 +16,7 @@ export interface User {
   /** Total bytes consumed by completed user files */
   storageConsumedCount: number;
   /** Subscription tier stored on the user record */
-  tier: UserTier;
+  tier: EnrichedUserTier;
+  /** Plan limits derived from tier at request time */
+  planDetails: PlanDetails;
 }

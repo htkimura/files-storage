@@ -6,6 +6,8 @@
  * OpenAPI spec version: 1.0
  */
 import type { FileFilterType } from './fileFilterType';
+import type { FileSortField } from './fileSortField';
+import type { SortDirection } from './sortDirection';
 
 export type MyFilesParams = {
 page?: number;
@@ -15,4 +17,6 @@ filterType?: FileFilterType[];
  * Filter by folder. Omit to return all files. Pass null for root-level files only.
  */
 folderId?: string | null;
+sortBy?: FileSortField;
+sortOrder?: SortDirection;
 };

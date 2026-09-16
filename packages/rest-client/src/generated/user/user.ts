@@ -26,6 +26,7 @@ import type {
 } from 'axios'
 import type {
   CreateUserDto,
+  EnrichedUser,
   GetUserFilesOutput,
   LoginDto,
   MyFilesParams,
@@ -225,7 +226,7 @@ export const useRefreshToken = <TData = Awaited<ReturnType<typeof refreshToken>>
  */
 export const me = (
      options?: AxiosRequestConfig
- ): Promise<AxiosResponse<User>> => {
+ ): Promise<AxiosResponse<EnrichedUser>> => {
     
     
     return axios.get(
@@ -345,3 +346,64 @@ export function useMyFiles<TData = Awaited<ReturnType<typeof myFiles>>, TError =
 
 
 
+/**
+ * Sums the size of all completed user files and updates storageConsumedCount.
+ * @summary Recalculate the authenticated user storage consumed count
+ */
+export const recalculateStorageConsumed = (
+     options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<User>> => {
+    
+    
+    return axios.post(
+      `/users/me/storage/recalculate`,undefined,options
+    );
+  }
+
+
+
+export const getRecalculateStorageConsumedMutationOptions = <TData = Awaited<ReturnType<typeof recalculateStorageConsumed>>, TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,void, TContext>, axios?: AxiosRequestConfig}
+) => {
+const mutationKey = ['recalculateStorageConsumed'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, axios: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof recalculateStorageConsumed>>, void> = () => {
+          
+
+          return  recalculateStorageConsumed(axiosOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions } as UseMutationOptions<TData, TError,void, TContext>}
+
+    export type RecalculateStorageConsumedMutationResult = NonNullable<Awaited<ReturnType<typeof recalculateStorageConsumed>>>
+    
+    export type RecalculateStorageConsumedMutationError = AxiosError<unknown>
+
+    /**
+ * @summary Recalculate the authenticated user storage consumed count
+ */
+export const useRecalculateStorageConsumed = <TData = Awaited<ReturnType<typeof recalculateStorageConsumed>>, TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,void, TContext>, axios?: AxiosRequestConfig}
+): UseMutationResult<
+        TData,
+        TError,
+        void,
+        TContext
+      > => {
+
+      const mutationOptions = getRecalculateStorageConsumedMutationOptions(options);
+
+      return useMutation(mutationOptions);
+    }
+    
