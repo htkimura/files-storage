@@ -36,6 +36,10 @@ export class CreateImageThumbnailUseCase {
 
     if (file.userId !== userId) throw new NotFoundException('File not found');
 
+    if (file.thumbnailPath) {
+      return file;
+    }
+
     const original = await this.r2Service.getObject(file.path);
 
     const originalBuffer = await buffer(original.Body as any);
