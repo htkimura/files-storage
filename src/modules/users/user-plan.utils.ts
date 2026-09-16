@@ -1,5 +1,6 @@
 export const USER_TIER = {
   FREE: 'free',
+  PRO: 'pro',
 } as const;
 
 export type UserTier = (typeof USER_TIER)[keyof typeof USER_TIER];
@@ -11,7 +12,8 @@ export interface PlanDetails {
 }
 
 export const planDetailsMap: Record<UserTier, PlanDetails> = {
-  [USER_TIER.FREE]: { storageLimit: 5_368_709_120 },
+  [USER_TIER.FREE]: { storageLimit: 5 * 1024 ** 3 },
+  [USER_TIER.PRO]: { storageLimit: 100 * 1024 ** 3 },
 };
 
 export function getPlanDetails(tier: string): PlanDetails {
