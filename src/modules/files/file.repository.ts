@@ -1,4 +1,6 @@
+import { FileSortField, SortDirection } from '@common/enums';
 import { Obj } from '@common/types';
+import { getFileOrderBy } from '@common/utils';
 import { PrismaService } from '@modules/prisma';
 import { Injectable } from '@nestjs/common';
 
@@ -21,6 +23,8 @@ interface GetManyByUserId {
   skip: number;
   take: number;
   filters?: Obj;
+  sortBy?: FileSortField;
+  sortOrder?: SortDirection;
 }
 
 @Injectable()
@@ -32,6 +36,8 @@ export class FileRepository {
     skip,
     take,
     filters,
+    sortBy,
+    sortOrder,
   }: GetManyByUserId): Promise<File[]> {
     return this.prismaService.file.findMany({
       where: {
@@ -41,9 +47,7 @@ export class FileRepository {
       },
       skip,
       take,
-      orderBy: {
-        createdAt: 'desc',
-      },
+      orderBy: getFileOrderBy(sortBy, sortOrder),
     });
   }
 

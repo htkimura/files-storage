@@ -1,6 +1,7 @@
+import { FileSortField, SortDirection } from '@common/enums';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsInt, IsOptional, IsString, Max } from 'class-validator';
+import { IsEnum, IsInt, IsOptional, IsString, Max } from 'class-validator';
 
 export class ListChildrenDto {
   @ApiProperty({ default: 1 })
@@ -20,4 +21,22 @@ export class ListChildrenDto {
   @IsString()
   @IsOptional()
   parentFolderId?: string;
+
+  @ApiPropertyOptional({
+    enum: FileSortField,
+    enumName: 'FileSortField',
+    default: FileSortField.DATE,
+  })
+  @IsOptional()
+  @IsEnum(FileSortField)
+  sortBy?: FileSortField = FileSortField.DATE;
+
+  @ApiPropertyOptional({
+    enum: SortDirection,
+    enumName: 'SortDirection',
+    default: SortDirection.DESC,
+  })
+  @IsOptional()
+  @IsEnum(SortDirection)
+  sortOrder?: SortDirection = SortDirection.DESC;
 }

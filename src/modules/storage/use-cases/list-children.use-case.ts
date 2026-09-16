@@ -25,6 +25,8 @@ export class ListChildrenUseCase {
     page,
     size,
     userId,
+    sortBy,
+    sortOrder,
   }: ListChildrenArgs): Promise<ListChildrenOutput> {
     const foundUser = await this.userService.getUserById({ userId });
 
@@ -50,6 +52,8 @@ export class ListChildrenUseCase {
         filters: {
           folderId: parentFolderId ? parentFolderId : { isSet: false },
         },
+        sortBy,
+        sortOrder,
       }),
       this.fileService.getCountByUserId(userId, parentFolderId),
     ]);

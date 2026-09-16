@@ -29,6 +29,8 @@ export class GetManyFilesByUserIdUseCase {
     size,
     filterType,
     folderId,
+    sortBy,
+    sortOrder,
   }: GetUserFilesArgs): Promise<GetUserFilesOutput> {
     const foundUser = await this.userRepository.getById(userId);
 
@@ -50,6 +52,8 @@ export class GetManyFilesByUserIdUseCase {
         skip: (page - 1) * size,
         take: size,
         filters,
+        sortBy,
+        sortOrder,
       }),
       this.fileRepository.getCountByUserId(userId, undefined, filters),
     ]);

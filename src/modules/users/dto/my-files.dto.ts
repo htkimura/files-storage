@@ -1,4 +1,4 @@
-import { FileFilterType } from '@common/enums';
+import { FileFilterType, FileSortField, SortDirection } from '@common/enums';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
 import { IsEnum, IsInt, IsOptional, IsUUID, Max } from 'class-validator';
@@ -45,4 +45,22 @@ export class MyFilesDto {
   @IsOptional()
   @IsUUID()
   folderId?: string | null;
+
+  @ApiPropertyOptional({
+    enum: FileSortField,
+    enumName: 'FileSortField',
+    default: FileSortField.DATE,
+  })
+  @IsOptional()
+  @IsEnum(FileSortField)
+  sortBy?: FileSortField = FileSortField.DATE;
+
+  @ApiPropertyOptional({
+    enum: SortDirection,
+    enumName: 'SortDirection',
+    default: SortDirection.DESC,
+  })
+  @IsOptional()
+  @IsEnum(SortDirection)
+  sortOrder?: SortDirection = SortDirection.DESC;
 }
