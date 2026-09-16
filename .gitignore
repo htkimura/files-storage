@@ -5,6 +5,7 @@ generated-swagger.json
 
 # compiled output
 /dist
+*.tsbuildinfo
 node_modules/
 
 # Logs
