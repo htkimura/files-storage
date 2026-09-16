@@ -1,10 +1,8 @@
 import { AuthUser } from '@common/decorators';
-import { BullMQJob, BullMQQueue } from '@common/enums';
 import { AuthGuard } from '@common/guards';
 import { JUser } from '@common/types';
 import { File, FileWithPresignedUrl } from '@modules/files';
 import { DeleteBulkFilesOutput, UploadFileOutput } from '@modules/files/models';
-import { InjectQueue } from '@nestjs/bullmq';
 import {
   Body,
   Controller,
@@ -19,7 +17,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { Queue } from 'bullmq';
 
 import {
   CompleteMultipartUploadDto,
@@ -34,14 +31,13 @@ import {
   MultipartPartUrlOutput,
 } from './models';
 import { StorageService } from './storage.service';
+import { EnqueueImageThumbnailUseCase } from './use-cases/enqueue-image-thumbnail.use-case';
 
 @Controller()
 export class StorageController {
   constructor(
     private readonly storageService: StorageService,
-
-    @InjectQueue(BullMQQueue.THUMBNAIL_QUEUE)
-    private readonly thumbnailQueue: Queue,
+    private readonly enqueueImageThumbnailUseCase: EnqueueImageThumbnailUseCase,
   ) {}
 
   @Get('uploads/presigned-url')
@@ -126,7 +122,7 @@ export class StorageController {
     operationId: 'completeMultipartUpload',
     summary: 'Finish multipart upload',
     description:
-      'Completes the multipart upload on R2, clears in-progress state, and enqueues thumbnail generation when applicable.',
+      'Completes the multipart upload on R2, clears in-progress state, and schedules thumbnail generation when applicable.',
   })
   @ApiResponse({
     status: 200,
@@ -174,7 +170,7 @@ export class StorageController {
     operationId: 'imageUploaded',
     summary: 'Confirms the image upload',
     description:
-      'Confirms the file upload, adding the file to the thumbnail queue',
+      'Confirms the file upload and schedules thumbnail generation when applicable.',
   })
   @ApiResponse({
     status: 200,
@@ -184,7 +180,7 @@ export class StorageController {
     @Body() { fileId }: { fileId: string },
     @AuthUser() user: JUser,
   ) {
-    await this.thumbnailQueue.add(BullMQJob.IMAGE_THUMBNAIL_JOB, {
+    await this.enqueueImageThumbnailUseCase.execute({
       fileId,
       userId: user._id,
     });
