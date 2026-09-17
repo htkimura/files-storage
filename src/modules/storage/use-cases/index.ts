@@ -1,6 +1,7 @@
 export * from './abort-multipart-upload.use-case';
 export * from './complete-multipart-upload.use-case';
 export * from './create-image-thumbnail.use-case';
+export * from './enqueue-image-thumbnail.use-case';
 export * from './delete-bulk-files-by-ids.use-case';
 export * from './delete-file-by-id.use-case';
 export * from './get-bulk-files-by-ids.use-case';

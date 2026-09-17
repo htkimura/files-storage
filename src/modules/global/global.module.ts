@@ -1,6 +1,4 @@
-import { AUTH_EXPIRES_IN, AUTH_JWT_SECRET, REDIS_URL } from '@common/config';
-import { BullMQQueue } from '@common/enums';
-import { BullModule } from '@nestjs/bullmq';
+import { AUTH_EXPIRES_IN, AUTH_JWT_SECRET } from '@common/config';
 import { Global, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 
@@ -14,17 +12,7 @@ export const jwtModule = JwtModule.register({
   },
 });
 
-const exposedModules = [
-  jwtModule,
-  BullModule.forRoot({
-    connection: {
-      url: REDIS_URL,
-    },
-  }),
-  ...Object.values(BullMQQueue).map((queue) =>
-    BullModule.registerQueue({ name: queue }),
-  ),
-];
+const exposedModules = [jwtModule];
 const exposedProviders = [CryptService];
 
 @Global()

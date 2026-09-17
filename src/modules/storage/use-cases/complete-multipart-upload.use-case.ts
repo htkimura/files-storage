@@ -1,11 +1,9 @@
-import { BullMQJob, BullMQQueue } from '@common/enums';
 import { FileService } from '@modules/files';
 import { UserService } from '@modules/users/user.service';
-import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Queue } from 'bullmq';
 
 import { R2Service } from '../r2.service';
+import { EnqueueImageThumbnailUseCase } from './enqueue-image-thumbnail.use-case';
 
 export interface CompleteMultipartUploadArgs {
   userId: string;
@@ -33,8 +31,7 @@ export class CompleteMultipartUploadUseCase {
     private readonly fileService: FileService,
     private readonly r2Service: R2Service,
     private readonly userService: UserService,
-    @InjectQueue(BullMQQueue.THUMBNAIL_QUEUE)
-    private readonly thumbnailQueue: Queue,
+    private readonly enqueueImageThumbnailUseCase: EnqueueImageThumbnailUseCase,
   ) {}
 
   async execute({
@@ -76,7 +73,7 @@ export class CompleteMultipartUploadUseCase {
 
     await this.userService.adjustStorageConsumedCount(userId, file.size);
 
-    await this.thumbnailQueue.add(BullMQJob.IMAGE_THUMBNAIL_JOB, {
+    await this.enqueueImageThumbnailUseCase.execute({
       fileId,
       userId,
     });

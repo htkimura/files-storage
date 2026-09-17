@@ -14,5 +14,10 @@ export const {
   AUTH_JWT_REFRESH_SECRET = '***',
   AUTH_HEADER = 'authorization',
   AUTH_EXPIRES_IN = '14d',
-  REDIS_URL = '***',
+  GCP_PROJECT_ID = '',
+  GCP_LOCATION = 'southamerica-east1',
+  CLOUD_TASKS_QUEUE = 'thumbnail-queue',
+  CLOUD_TASKS_HANDLER_URL = '',
+  CLOUD_TASKS_INVOKER_EMAIL = '',
+  THUMBNAIL_TASKS_MODE = 'inline',
 } = process.env;
